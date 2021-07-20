@@ -10,20 +10,13 @@ public class Multicur extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.getLogger().info("Starting up Multicur...");
 
         //Checks for plugin folder
         if (!this.getDataFolder().exists()) {
             this.getLogger().info("No plugin folder detected...");
             this.getDataFolder().mkdir();
             this.getLogger().info("Made a new plugin folder!");
-        }
-
-        //Checks for users folder
-        final File userFolder = new File(this.getDataFolder() + "/userdata");
-        if (!userFolder.exists()) {
-            this.getLogger().info("No users folder detected...");
-            userFolder.mkdir();
-            this.getLogger().info("Made a new users folder!");
         }
 
         //Checks for config
@@ -38,5 +31,10 @@ public class Multicur extends JavaPlugin {
         this.getCommand("currency send").setExecutor(new CurrencyCommand(this));
         this.getCommand("currency balance").setExecutor(new CurrencyCommand(this));
         this.getCommand("currency admin").setExecutor(new CurrencyAdminCommand(this));
+    }
+
+    @Override
+    public void onDisable(){
+        this.getLogger().info("Shutting down Multicur...");
     }
 }
