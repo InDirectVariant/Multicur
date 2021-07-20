@@ -1,5 +1,6 @@
 package ca.variantlabs.multicur.commands;
 
+import org.bukkit.entity.Player;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
