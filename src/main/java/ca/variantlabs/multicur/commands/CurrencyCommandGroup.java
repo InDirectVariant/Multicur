@@ -2,7 +2,7 @@ package ca.variantlabs.multicur.commands;
 
 import org.mineacademy.fo.command.SimpleCommandGroup;
 
-public class CurrencyCommand extends SimpleCommandGroup {
+public class CurrencyCommandGroup extends SimpleCommandGroup {
 
     @Override
     protected void registerSubcommands() {
