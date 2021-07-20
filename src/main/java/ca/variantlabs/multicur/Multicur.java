@@ -15,8 +15,15 @@ public class Multicur extends JavaPlugin {
         //Checks for plugin folder
         if (!this.getDataFolder().exists()) {
             this.getLogger().info("No plugin folder detected...");
-            this.getDataFolder().mkdir();
-            this.getLogger().info("Made a new plugin folder!");
+            try {
+                if(this.getDataFolder().mkdir()){
+                    this.getLogger().info("Made a new plugin folder!");
+                };
+            } catch (Exception e){
+                this.getLogger().info(e.toString());
+                this.getLogger().info("Could not make a new plugin folder");
+            }
+
         }
 
         //Checks for config

@@ -15,6 +15,11 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        // Possible sub commands.
+        // Give <player> <amount>
+        // Remove <player> <amount>
+        // Balance <player>
+
         return false;
     }
 }
