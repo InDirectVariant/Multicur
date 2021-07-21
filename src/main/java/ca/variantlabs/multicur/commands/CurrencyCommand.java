@@ -72,7 +72,9 @@ public class CurrencyCommand implements CommandExecutor {
             receiver.sendMessage(MessageFormat.format("You have received {0} currency from {1}!", amntToSend, sender.getDisplayName()));
 
             return true;
-        } else if (command.getName().equalsIgnoreCase("currency balance") || command.getName().equalsIgnoreCase("currency bal")){
+        }
+        // Currency balance commands
+        else if (command.getName().equalsIgnoreCase("currency balance") || command.getName().equalsIgnoreCase("currency bal")){
             sender.sendMessage(MessageFormat.format("Your balance is {0}!", Currency.getCurrency(sender.getUniqueId())));
             plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), Currency.getCurrency(sender.getUniqueId())));
             return true;
