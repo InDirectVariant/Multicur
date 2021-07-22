@@ -22,6 +22,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
         // Give <player> <amount>
         // Remove <player> <amount>
         // Balance <player>
+        // Create <name> <symbol>
         if(!(commandSender instanceof Player sender)){plugin.getLogger().info("ERROR: You must be a player to run this command!"); return false;}
 
         String op = strings[0];

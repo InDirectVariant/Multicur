@@ -1,0 +1,36 @@
+#-----------------------------------------------------#
+#
+# Multicur Configuration Options
+# Developed by Variant__
+# Documentation, FAQ, and issues can be found on our DevOps portal
+# See https://dev.azure.com/variantlabs/Multicur
+#
+#-----------------------------------------------------#
+
+#Multicur uses MySQL as storage, there is no local storage available at this time. You must have MySQL to use Multicur
+mysql:
+  # This is set to false by default, set to true and enter credentials to enable the plugin
+  use: false
+  username: 'multicur'
+  password: 'password123'
+  address: '127.0.0.1:3306'
+
+# Here are the currency settings
+# Each currency is it's own section with the symbol, starting balance, format, and whether players can pay each other with it
+currency:
+  # Start with the currency name
+  token1:
+    # The symbol displayed in front of the currency
+    symbol: TO1
+    # How much a player will start with when they first join
+    starting: 0
+    # The display format of the currency
+    format: '###,###.##'
+    # Enable this to allow players to send the currency to each other
+    pay: false
+  # This is just another example currency
+  token2:
+    symbole: TO2
+    starting: 0
+    format: '###,###.##'
+    pay: false
