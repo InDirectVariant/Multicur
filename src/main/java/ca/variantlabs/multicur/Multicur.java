@@ -4,14 +4,10 @@ import ca.variantlabs.multicur.commands.CurrencyAdminCommand;
 import ca.variantlabs.multicur.commands.CurrencyCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Multicur extends JavaPlugin {
 
@@ -72,6 +68,9 @@ public class Multicur extends JavaPlugin {
         this.getCommand("currency balance").setExecutor(new CurrencyCommand(this));
         this.getCommand("currency bal").setExecutor(new CurrencyCommand(this));
         this.getCommand("currency admin").setExecutor(new CurrencyAdminCommand(this));
+
+        // Register Events
+        Bukkit.getPluginManager().registerEvents(new PlayerJoin(this), this);
 
     }
 
