@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import javax.mail.Message;
 import java.text.MessageFormat;
 
 public class CurrencyAdminCommand implements CommandExecutor {
@@ -50,22 +49,23 @@ public class CurrencyAdminCommand implements CommandExecutor {
             }
 
             // Assign variables
-            Player reciever = Bukkit.getPlayer(strings[1]);
+            Player receiver = Bukkit.getPlayer(strings[1]);
             double amntToSend = Double.parseDouble(strings[2]);
 
             // Give currency to player
             try {
-                Currency.addCurrency(reciever.getUniqueId(), amntToSend);
+                assert receiver != null;
+                Currency.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
             } catch (Exception e){
-                sender.sendMessage("Could not send credits to " + reciever.getDisplayName());
-                plugin.getLogger().info(MessageFormat.format("ERROR: Could not add currency to {0}", reciever.getDisplayName()));
+                sender.sendMessage("Could not send credits to " + receiver.getDisplayName());
+                plugin.getLogger().info(MessageFormat.format("ERROR: Could not add currency to {0}", receiver.getDisplayName()));
                 plugin.getLogger().info(e.toString());
             }
 
             // Send confirmation messages
-            sender.sendMessage("You have sent " + strings[2] + " currency to " + reciever.getDisplayName() + "!");
-            reciever.sendMessage("You have received " + strings[2] + " currency!");
-            plugin.getLogger().info(MessageFormat.format("{0} - Added {1} currency to {2}'s balance!", sender.getDisplayName(), amntToSend, reciever.getDisplayName()));
+            sender.sendMessage("You have sent " + strings[2] + " currency to " + receiver.getDisplayName() + "!");
+            receiver.sendMessage("You have received " + strings[2] + " currency!");
+            plugin.getLogger().info(MessageFormat.format("{0} - Added {1} currency to {2}'s balance!", sender.getDisplayName(), amntToSend, receiver.getDisplayName()));
             return true;
         }
         // Currency Admin remove command
@@ -89,22 +89,23 @@ public class CurrencyAdminCommand implements CommandExecutor {
             }
 
             // Assign variables
-            Player reciever = Bukkit.getPlayer(strings[1]);
+            Player receiver = Bukkit.getPlayer(strings[1]);
             double amntToRemove = Double.parseDouble(strings[2]);
 
             // Remove the currency
             try {
-                Currency.removeCurrency(reciever.getUniqueId(), amntToRemove);
+                assert receiver != null;
+                Currency.removeCurrency(plugin, receiver.getUniqueId(), amntToRemove);
             } catch(Exception e){
-                sender.sendMessage("Could not remove credits to " + reciever.getDisplayName());
-                plugin.getLogger().info(MessageFormat.format("ERROR: Could not remove currency from {0}!", reciever.getDisplayName()));
+                sender.sendMessage("Could not remove credits to " + receiver.getDisplayName());
+                plugin.getLogger().info(MessageFormat.format("ERROR: Could not remove currency from {0}!", receiver.getDisplayName()));
                 plugin.getLogger().info(e.toString());
             }
 
             // Send confirmation messages
-            sender.sendMessage("You have removed " + strings[2] + " currency from " + reciever.getDisplayName());
-            reciever.sendMessage( strings[2] + " currency has been removed from your account!");
-            plugin.getLogger().info(MessageFormat.format("{0} - Removed {1} currency from {0}'s balance!", sender.getDisplayName(), amntToRemove, reciever.getDisplayName()));
+            sender.sendMessage("You have removed " + strings[2] + " currency from " + receiver.getDisplayName());
+            receiver.sendMessage( strings[2] + " currency has been removed from your account!");
+            plugin.getLogger().info(MessageFormat.format("{0} - Removed {1} currency from {0}'s balance!", sender.getDisplayName(), amntToRemove, receiver.getDisplayName()));
             return true;
         }
         // Currency Admin balance command
@@ -123,11 +124,12 @@ public class CurrencyAdminCommand implements CommandExecutor {
             }
 
             // Get the player
-            Player reciever = Bukkit.getPlayer(strings[1]);
+            Player receiver = Bukkit.getPlayer(strings[1]);
 
             // Send a message with the balance
-            sender.sendMessage("Balance of " + reciever.getDisplayName() + ": " + Currency.getCurrency(plugin, reciever.getUniqueId()));
-            plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", sender.getDisplayName(), reciever.getDisplayName()));
+            assert receiver != null;
+            sender.sendMessage("Balance of " + receiver.getDisplayName() + ": " + Currency.getCurrency(plugin, receiver.getUniqueId()));
+            plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", sender.getDisplayName(), receiver.getDisplayName()));
         }
         return false;
     }
