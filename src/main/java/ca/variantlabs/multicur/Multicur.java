@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.Objects;
 
 public class Multicur extends JavaPlugin {
 
@@ -23,7 +24,7 @@ public class Multicur extends JavaPlugin {
             try {
                 if(this.getDataFolder().mkdir()){
                     this.getLogger().info("Made a new plugin folder!");
-                };
+                }
             } catch (Exception e){
                 this.getLogger().info(e.toString());
                 this.getLogger().info("Could not make a new plugin folder");
@@ -51,7 +52,7 @@ public class Multicur extends JavaPlugin {
             try {
                 connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
                 // Create userdata table with one currency slot
-                String sql = "CREATE TABLE IF NOT EXISTS mcur_accounts(id bigint NOT NULL AUTO_INCREMENT, uuid varchar(36), PRIMARY KEY(id));";
+                String sql = "CREATE TABLE IF NOT EXISTS mcur_accounts(id bigint NOT NULL AUTO_INCREMENT, uuid varchar(36), PRIMARY KEY(uuid));";
                 PreparedStatement stmt = connection.prepareStatement(sql);
                 stmt.executeUpdate();
             } catch (SQLException e) {
@@ -64,10 +65,10 @@ public class Multicur extends JavaPlugin {
 
 
         //Register Commands
-        this.getCommand("currency send").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currency balance").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currency bal").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currency admin").setExecutor(new CurrencyAdminCommand(this));
+        Objects.requireNonNull(this.getCommand("currency send")).setExecutor(new CurrencyCommand(this));
+        Objects.requireNonNull(this.getCommand("currency balance")).setExecutor(new CurrencyCommand(this));
+        Objects.requireNonNull(this.getCommand("currency bal")).setExecutor(new CurrencyCommand(this));
+        Objects.requireNonNull(this.getCommand("currency admin")).setExecutor(new CurrencyAdminCommand(this));
 
         // Register Events
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(this), this);
@@ -80,7 +81,7 @@ public class Multicur extends JavaPlugin {
         // MySQL
         try { // using a try catch to catch connection errors (like wrong sql password...)
             if (connection!=null && !connection.isClosed()){ // checking if connection isn't null to
-                // avoid receiving a nullpointer
+                // avoid receiving a null pointer
                 connection.close(); // closing the connection field variable.
             }
         } catch(Exception e) {
