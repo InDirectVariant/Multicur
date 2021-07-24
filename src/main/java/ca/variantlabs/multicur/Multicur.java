@@ -71,7 +71,6 @@ public class Multicur extends JavaPlugin {
 
         // Register Events
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(this), this);
-
     }
 
     @Override

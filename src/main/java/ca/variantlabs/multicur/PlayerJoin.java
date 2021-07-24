@@ -47,11 +47,11 @@ public class PlayerJoin implements Listener {
                 String nsql = "INSERT INTO mcur_accounts (uuid, ?) VALUES (?, ?);";
                 try {
                     // Prepare the statement and name it nstmt (new statement)
-                    PreparedStatement nstmt = plugin.connection.prepareStatement(sql);
+                    PreparedStatement nstmt = plugin.connection.prepareStatement(nsql);
                     // Insert the currency name, uuid, and starting balance
                     nstmt.setString(1, currency);
-                    nstmt.setString(1, uuid);
-                    nstmt.setDouble(1, start_balance);
+                    nstmt.setString(2, uuid);
+                    nstmt.setDouble(3, start_balance);
                     // Execute the update
                     nstmt.executeUpdate();
                 } catch(SQLException e){
@@ -63,6 +63,5 @@ public class PlayerJoin implements Listener {
             // Catch and print any errors
             e.printStackTrace();
         }
-
     }
 }
