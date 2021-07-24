@@ -126,7 +126,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             Player reciever = Bukkit.getPlayer(strings[1]);
 
             // Send a message with the balance
-            sender.sendMessage("Balance of " + reciever.getDisplayName() + ": " + Currency.getCurrency(reciever.getUniqueId()));
+            sender.sendMessage("Balance of " + reciever.getDisplayName() + ": " + Currency.getCurrency(plugin, reciever.getUniqueId()));
             plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", sender.getDisplayName(), reciever.getDisplayName()));
         }
         return false;
