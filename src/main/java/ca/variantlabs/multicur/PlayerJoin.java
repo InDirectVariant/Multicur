@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class PlayerJoin implements Listener {
@@ -28,7 +29,7 @@ public class PlayerJoin implements Listener {
         // Check to see if the player is already in the DB
         try {
             // Prepare the statement and name it stmt
-            PreparedStatement stmt = plugin.connection.prepareStatement(sql);
+            PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
             // Insert the players UUID into the query
             stmt.setString(1, uuid);
             // Execute the query and get the results
@@ -36,7 +37,7 @@ public class PlayerJoin implements Listener {
             // Check the results, if there are none then we need to create the player in the DB
             if(!results.next()){
                 // Get the name of the custom currency
-                Set<String> set_currencies = plugin.getConfig().getConfigurationSection("currency").getKeys(false);
+                Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
                 List<String> currencies = new ArrayList<>(set_currencies);
                 String currency = currencies.get(0);
 
