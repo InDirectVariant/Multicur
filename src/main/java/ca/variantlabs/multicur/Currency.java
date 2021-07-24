@@ -15,12 +15,6 @@ public class Currency {
     }
 
     public static String getCurrency(UUID player){
-
-
-
-
-
-
         String sql = "SELECT bal_currency1 FROM mcur_accounts WHERE uuid=?;";
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
