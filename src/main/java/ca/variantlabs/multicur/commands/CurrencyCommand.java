@@ -52,7 +52,7 @@ public class CurrencyCommand implements CommandExecutor {
             }
 
             // Get the balance of the sender and how much they want to send
-            double senderCurrency = Double.parseDouble(Currency.getCurrency(sender.getUniqueId()));
+            double senderCurrency = Double.parseDouble(Currency.getCurrency(plugin, sender.getUniqueId()));
             double amntToSend = Double.parseDouble(strings[1]);
 
             // Check if the sender is sending more currency than they have available
@@ -76,8 +76,8 @@ public class CurrencyCommand implements CommandExecutor {
 
         // Currency balance commands
         else if (command.getName().equalsIgnoreCase("currency balance") || command.getName().equalsIgnoreCase("currency bal")){
-            sender.sendMessage(MessageFormat.format("Your balance is {0}!", Currency.getCurrency(sender.getUniqueId())));
-            plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), Currency.getCurrency(sender.getUniqueId())));
+            sender.sendMessage(MessageFormat.format("Your balance is {0}!", Currency.getCurrency(plugin, sender.getUniqueId())));
+            plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), Currency.getCurrency(plugin, sender.getUniqueId())));
             return true;
         }
 
