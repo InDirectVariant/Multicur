@@ -37,8 +37,7 @@ public class PlayerJoin implements Listener {
             if(!results.next()){
                 // Get the name of the custom currency
                 Set<String> set_currencies = plugin.getConfig().getConfigurationSection("currency").getKeys(false);
-                List<String> currencies = new ArrayList<>();
-                currencies.addAll(set_currencies);
+                List<String> currencies = new ArrayList<>(set_currencies);
                 String currency = currencies.get(0);
 
                 // Get the configured starting balance for the currency
@@ -47,7 +46,7 @@ public class PlayerJoin implements Listener {
                 String nsql = "INSERT INTO mcur_accounts (uuid, ?) VALUES (?, ?);";
                 try {
                     // Prepare the statement and name it nstmt (new statement)
-                    PreparedStatement nstmt = plugin.connection.prepareStatement(nsql);
+                    PreparedStatement nstmt = Multicur.connection.prepareStatement(nsql);
                     // Insert the currency name, uuid, and starting balance
                     nstmt.setString(1, currency);
                     nstmt.setString(2, uuid);
