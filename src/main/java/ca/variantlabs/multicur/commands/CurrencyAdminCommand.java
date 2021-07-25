@@ -127,9 +127,14 @@ public class CurrencyAdminCommand implements CommandExecutor {
             Player receiver = Bukkit.getPlayer(strings[1]);
 
             // Send a message with the balance
-            assert receiver != null;
-            sender.sendMessage("Balance of " + receiver.getDisplayName() + ": " + Currency.getCurrency(plugin, receiver.getUniqueId()));
-            plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", sender.getDisplayName(), receiver.getDisplayName()));
+            try {
+                assert receiver != null;
+                sender.sendMessage("Balance of " + receiver.getDisplayName() + ": " + Currency.getCurrency(plugin, receiver.getUniqueId()));
+                plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", sender.getDisplayName(), receiver.getDisplayName()));
+            } catch (Exception e){
+                sender.sendMessage(MessageFormat.format("Could not get the balance of {0} due to error: {1}", receiver.getDisplayName(), e));
+                plugin.getLogger().info(MessageFormat.format("{0} - Could not get balance due to error: {1}", receiver.getDisplayName(), e));
+            }
         }
         return false;
     }

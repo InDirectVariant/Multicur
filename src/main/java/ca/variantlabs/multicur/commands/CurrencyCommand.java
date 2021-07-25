@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
 import java.text.MessageFormat;
 import static org.bukkit.Bukkit.getPlayer;
 
@@ -60,26 +61,31 @@ public class CurrencyCommand implements CommandExecutor {
             }
 
             // Get the balance of the sender and how much they want to send
-            double senderCurrency = Double.parseDouble(Currency.getCurrency(plugin, sender.getUniqueId()));
-            double amntToSend = Double.parseDouble(strings[1]);
-
-            // Check if the sender is sending more currency than they have available
-            if(senderCurrency < amntToSend){sender.sendMessage("You cannot send more currency than you currently have!"); return false;}
-
-            // Perform the operations to transfer currency
             try {
-                Currency.removeCurrency(plugin, sender.getUniqueId(), amntToSend);
-                Currency.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
-            } catch (Exception e){
-                plugin.getLogger().info(e.toString());
+                double senderCurrency = Double.parseDouble(Currency.getCurrency(plugin, sender.getUniqueId()));
+                double amntToSend = Double.parseDouble(strings[1]);
+                // Check if the sender is sending more currency than they have available
+                if(senderCurrency < amntToSend){sender.sendMessage("You cannot send more currency than you currently have!"); return false;}
+
+                // Perform the operations to transfer currency
+                try {
+                    Currency.removeCurrency(plugin, sender.getUniqueId(), amntToSend);
+                    Currency.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
+                } catch (Exception e){
+                    plugin.getLogger().info(e.toString());
+                    return false;
+                }
+
+                // Send messages to the players for the transaction
+                sender.sendMessage(MessageFormat.format("You have sent {0} {1} currency!", receiver.getDisplayName(), amntToSend));
+                receiver.sendMessage(MessageFormat.format("You have received {0} currency from {1}!", amntToSend, sender.getDisplayName()));
+
+                return true;
+            } catch(Exception e){
+                sender.sendMessage("An error occurred, please contact an administrator!");
+                plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to get Currency: {1}", sender.getDisplayName(), e));
                 return false;
             }
-
-            // Send messages to the players for the transaction
-            sender.sendMessage(MessageFormat.format("You have sent {0} {1} currency!", receiver.getDisplayName(), amntToSend));
-            receiver.sendMessage(MessageFormat.format("You have received {0} currency from {1}!", amntToSend, sender.getDisplayName()));
-
-            return true;
         }
 
         /*------------------------------------------------------------------------------------------------------------*/
@@ -93,11 +99,16 @@ public class CurrencyCommand implements CommandExecutor {
                 return false;
             }
 
-            String balance = Currency.getCurrency(plugin, sender.getUniqueId());
+            try {
+                String balance = Currency.getCurrency(plugin, sender.getUniqueId());
 
-            sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
-            plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), balance));
-            return true;
+                sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
+                plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), balance));
+                return true;
+            } catch(Exception e){
+                sender.sendMessage("An error occurred, please contact an administrator!");
+                plugin.getLogger().info(MessageFormat.format("{0} - Could not get the balance of {0} due to an error: {1}", sender.getDisplayName(), e));
+            }
         }
 
         // No input

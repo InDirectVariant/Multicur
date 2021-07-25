@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Currency {
     // Method to get the currency balance of a player
-    public static String getCurrency(JavaPlugin plugin, UUID player){
+    public static String getCurrency(JavaPlugin plugin, UUID player) throws Exception{
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
         String currency_name = currencies.get(0);
@@ -22,7 +22,7 @@ public class Currency {
             return results.getNString(currency_name);
         } catch (SQLException e){
             e.printStackTrace();
-            return "Error";
+            throw new Exception("SQL Exception, see console for details");
         }
     }
 
