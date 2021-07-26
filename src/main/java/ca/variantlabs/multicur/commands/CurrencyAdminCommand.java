@@ -1,6 +1,6 @@
 package ca.variantlabs.multicur.commands;
 
-import ca.variantlabs.multicur.Currency;
+import ca.variantlabs.multicur.CurrencyOperations;
 import ca.variantlabs.multicur.Multicur;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -55,7 +55,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             // Give currency to player
             try {
                 assert receiver != null;
-                Currency.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
+                CurrencyOperations.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
             } catch (Exception e){
                 sender.sendMessage("Could not send credits to " + receiver.getDisplayName());
                 plugin.getLogger().info(MessageFormat.format("ERROR: Could not add currency to {0}", receiver.getDisplayName()));
@@ -95,7 +95,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             // Remove the currency
             try {
                 assert receiver != null;
-                Currency.removeCurrency(plugin, receiver.getUniqueId(), amntToRemove);
+                CurrencyOperations.removeCurrency(plugin, receiver.getUniqueId(), amntToRemove);
             } catch(Exception e){
                 sender.sendMessage("Could not remove credits to " + receiver.getDisplayName());
                 plugin.getLogger().info(MessageFormat.format("ERROR: Could not remove currency from {0}!", receiver.getDisplayName()));
@@ -129,7 +129,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             // Send a message with the balance
             try {
                 assert receiver != null;
-                sender.sendMessage("Balance of " + receiver.getDisplayName() + ": " + Currency.getCurrency(plugin, receiver.getUniqueId()));
+                sender.sendMessage("Balance of " + receiver.getDisplayName() + ": " + CurrencyOperations.getCurrency(plugin, receiver.getUniqueId()));
                 plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", sender.getDisplayName(), receiver.getDisplayName()));
             } catch (Exception e){
                 sender.sendMessage(MessageFormat.format("Could not get the balance of {0} due to error: {1}", receiver.getDisplayName(), e));

@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class Currency {
+public class CurrencyOperations {
     // Method to get the currency balance of a player
     public static String getCurrency(JavaPlugin plugin, UUID player) throws Exception{
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
@@ -16,7 +16,7 @@ public class Currency {
         String sql = "SELECT ? FROM mcur_accounts WHERE uuid=?;";
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            stmt.setString(1, currency_name);
+            stmt.setString(1, currency_name + "_balance");
             stmt.setString(2, player.toString());
             ResultSet results = stmt.executeQuery();
             return results.getNString(currency_name);
@@ -39,7 +39,7 @@ public class Currency {
         String sql = "UPDATE mcur_accounts SET ?=? WHERE uuid=?";
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            stmt.setString(1, currency_name);
+            stmt.setString(1, currency_name + "_balance");
             stmt.setDouble(2, amount);
             stmt.setString(3, player.toString());
             stmt.executeUpdate();
@@ -63,7 +63,7 @@ public class Currency {
         String sql = "UPDATE mcur_accounts SET ?=? WHERE uuid=?";
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            stmt.setString(1, currency_name);
+            stmt.setString(1, currency_name + "_balance");
             stmt.setDouble(2, amount);
             stmt.setString(3, player.toString());
             stmt.executeUpdate();

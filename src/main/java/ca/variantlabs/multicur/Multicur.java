@@ -8,7 +8,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Multicur extends JavaPlugin {
 
@@ -51,12 +54,28 @@ public class Multicur extends JavaPlugin {
             // MySQL
             try {
                 connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
-                // Create userdata table with one currency slot
-                String sql = "CREATE TABLE IF NOT EXISTS mcur_accounts(id bigint NOT NULL AUTO_INCREMENT, uuid varchar(36), PRIMARY KEY(uuid));";
+                // Create userdata table
+                String sql = "CREATE TABLE IF NOT EXISTS mcur_accounts(id bigint NOT NULL AUTO_INCREMENT, uuid varchar(36), PRIMARY KEY(id));";
                 PreparedStatement stmt = connection.prepareStatement(sql);
                 stmt.executeUpdate();
+
+                // Create currency columns
+                Set<String> set_currencies = Objects.requireNonNull(config.getConfigurationSection("currency")).getKeys(false);
+                List<String> currencies = new ArrayList<>(set_currencies);
+                String currency = currencies.get(0);
+
+                String nsql = "ALTER TABLE mcur_accounts ADD ? double;";
+                PreparedStatement nstmt = connection.prepareStatement(nsql);
+                nstmt.setString(1, currency + "_balance");
+                nstmt.executeUpdate();
+
             } catch (SQLException e) {
                 e.printStackTrace();
+                if(e.getErrorCode() == 1060){
+                    this.getLogger().info("Currency column already exists, skipping creation.");
+                } else {
+                    this.getLogger().info("Error with MySQL, see above Stack Trace for debugging.");
+                }
             }
         } else {
             this.getLogger().info("MYSQL has not been enabled, disabling Multicur!");
@@ -65,10 +84,10 @@ public class Multicur extends JavaPlugin {
 
 
         //Register Commands
-        Objects.requireNonNull(this.getCommand("currency send")).setExecutor(new CurrencyCommand(this));
-        Objects.requireNonNull(this.getCommand("currency balance")).setExecutor(new CurrencyCommand(this));
-        Objects.requireNonNull(this.getCommand("currency bal")).setExecutor(new CurrencyCommand(this));
-        Objects.requireNonNull(this.getCommand("currency admin")).setExecutor(new CurrencyAdminCommand(this));
+        this.getCommand("currency send").setExecutor(new CurrencyCommand(this));
+        this.getCommand("currency balance").setExecutor(new CurrencyCommand(this));
+        this.getCommand("currency bal").setExecutor(new CurrencyCommand(this));
+        this.getCommand("currency admin").setExecutor(new CurrencyAdminCommand(this));
 
         // Register Events
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(this), this);

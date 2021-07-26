@@ -22,7 +22,7 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         // Create the query
-        String sql = "SELECT id FROM mcur_accounts WHERE uuid=?;";
+        String sql = "SELECT * FROM mcur_accounts WHERE uuid=?;";
         // Get the players UUID
         String uuid = event.getPlayer().getUniqueId().toString();
 
@@ -49,7 +49,7 @@ public class PlayerJoin implements Listener {
                     // Prepare the statement and name it nstmt (new statement)
                     PreparedStatement nstmt = Multicur.connection.prepareStatement(nsql);
                     // Insert the currency name, uuid, and starting balance
-                    nstmt.setString(1, currency);
+                    nstmt.setString(1, currency + "_balance");
                     nstmt.setString(2, uuid);
                     nstmt.setDouble(3, start_balance);
                     // Execute the update

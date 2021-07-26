@@ -1,7 +1,7 @@
 package ca.variantlabs.multicur.commands;
 
 import ca.variantlabs.multicur.Multicur;
-import ca.variantlabs.multicur.Currency;
+import ca.variantlabs.multicur.CurrencyOperations;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -62,15 +62,15 @@ public class CurrencyCommand implements CommandExecutor {
 
             // Get the balance of the sender and how much they want to send
             try {
-                double senderCurrency = Double.parseDouble(Currency.getCurrency(plugin, sender.getUniqueId()));
+                double senderCurrency = Double.parseDouble(CurrencyOperations.getCurrency(plugin, sender.getUniqueId()));
                 double amntToSend = Double.parseDouble(strings[1]);
                 // Check if the sender is sending more currency than they have available
                 if(senderCurrency < amntToSend){sender.sendMessage("You cannot send more currency than you currently have!"); return false;}
 
                 // Perform the operations to transfer currency
                 try {
-                    Currency.removeCurrency(plugin, sender.getUniqueId(), amntToSend);
-                    Currency.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
+                    CurrencyOperations.removeCurrency(plugin, sender.getUniqueId(), amntToSend);
+                    CurrencyOperations.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
                 } catch (Exception e){
                     plugin.getLogger().info(e.toString());
                     return false;
@@ -100,7 +100,7 @@ public class CurrencyCommand implements CommandExecutor {
             }
 
             try {
-                String balance = Currency.getCurrency(plugin, sender.getUniqueId());
+                String balance = CurrencyOperations.getCurrency(plugin, sender.getUniqueId());
 
                 sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
                 plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), balance));

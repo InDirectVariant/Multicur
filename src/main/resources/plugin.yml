@@ -1,3 +1,64 @@
 name: Multicur
 version: 1.0
+api-version: 1.17
 main: ca.variantlabs.multicur.Multicur
+
+commands:
+  currency send:
+    description: Send currency to a player
+    usage: /currency send <player> <amount>
+    permission: multicur.currency.send
+    permission-message: You don't have permission to use this command!
+  currency balance:
+    description: Get your currency balance
+    usage: /currency balance
+    permission: multicur.currency.balance
+    permission-message: You don't have permission to use this command!
+  curency bal:
+    description: Get your currency balance
+    usage: /currency bal
+    permission: multicur.currency.balance
+    permission-message: You don't have permission to use this command!
+  currency admin give:
+    description: Admin command to give currency to a player
+    usage: /currency admin give <player> <amount>
+    permission: multicur.admin.give
+    permission-message: You don't have permission to use this command!
+  currency admin remove:
+    description: Admin command to remove currency from a player
+    usage: /currency admin remove <player> <amount>
+    permission: multicur.admin.remove
+    permission-message: You don't have permission to use this command!
+  currency admin balance:
+    description: Admin command to get the balance of another player
+    usage: /currency admin balance <player>
+    permission: multicur.admin.balance
+    permission-message: You don't have permission to use this command!
+permissions:
+  multicur.currency.*:
+    description: Gives access to all player commands
+    children:
+      multicur.currency.send: true
+      multicur.currency.balance: true
+  multicur.admin.*:
+    description: Give access to all admin commands
+    default: op
+    children:
+      multicur.admin.give: true
+      multicur.admin.remove: true
+      multicur.admin.balance: true
+  multicur.currency.send:
+    description: Allows players to send currency to others
+    default: true
+  multicur.currency.balance:
+    description: Allows players to see their balance
+    default: true
+  multicur.admin.give:
+    description: Admin permission to give players currency
+    default: op
+  multicur.admin.remove:
+    description: Admin permission to remove players currency
+    default: op
+  multicur.admin.balance:
+    description: Admin permission to see players balances
+    default: op
