@@ -34,14 +34,14 @@ public class CurrencyCommand implements CommandExecutor {
                 return true;
             }
             // Check to make sure they put in a player to send currency too and an amount to send
-            if(strings[0].isBlank()) {
+            if(strings[1].isBlank()) {
                 plugin.getLogger().info(
                         MessageFormat.format("INFO: {0} ran Currency Send command without a player name",
                                 sender.getDisplayName()
                         )
                 );
                 commandSender.sendMessage("You must input a player to send currency too!"); return false;
-            } else if(strings[1].isBlank()){
+            } else if(strings[2].isBlank()){
                 plugin.getLogger().info(
                         MessageFormat.format("INFO: {0} ran Currency Send command without an amount",
                                 sender.getDisplayName()

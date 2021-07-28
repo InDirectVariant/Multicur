@@ -21,17 +21,17 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        // Create the query
-        String sql = "SELECT * FROM mcur_accounts WHERE uuid=?;";
+        plugin.getLogger().info(String.format("Player %s has joined, initializing Multicur for %s!", event.getPlayer().getDisplayName(), event.getPlayer().getDisplayName()));
         // Get the players UUID
         String uuid = event.getPlayer().getUniqueId().toString();
+        // Create the query
+        String sql = String.format("SELECT * FROM mcur_accounts WHERE uuid=%s;", uuid);
+        plugin.getLogger().info(String.format("Query: %s", sql));
 
         // Check to see if the player is already in the DB
         try {
             // Prepare the statement and name it stmt
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            // Insert the players UUID into the query
-            stmt.setString(1, uuid);
             // Execute the query and get the results
             ResultSet results = stmt.executeQuery();
             // Check the results, if there are none then we need to create the player in the DB

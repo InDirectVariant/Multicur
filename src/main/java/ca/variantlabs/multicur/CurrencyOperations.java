@@ -53,7 +53,7 @@ public class CurrencyOperations {
 
         // Get the current balance to determine what to set the new balance to
         double current = Double.parseDouble(getCurrency(plugin, player));
-        amount -= current;
+        amount = current - amount;
 
         String sql = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=%s", currency_name, amount, player);
         try {
