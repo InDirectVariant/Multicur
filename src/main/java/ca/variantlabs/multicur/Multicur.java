@@ -64,9 +64,8 @@ public class Multicur extends JavaPlugin {
                 List<String> currencies = new ArrayList<>(set_currencies);
                 String currency = currencies.get(0);
 
-                String nsql = "ALTER TABLE mcur_accounts ADD ? double;";
+                String nsql = String.format("ALTER TABLE mcur_accounts ADD %s double;", currency);
                 PreparedStatement nstmt = connection.prepareStatement(nsql);
-                nstmt.setString(1, currency + "_balance");
                 nstmt.executeUpdate();
 
             } catch (SQLException e) {
@@ -84,10 +83,10 @@ public class Multicur extends JavaPlugin {
 
 
         //Register Commands
-        this.getCommand("currency send").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currency balance").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currency bal").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currency admin").setExecutor(new CurrencyAdminCommand(this));
+        this.getCommand("currency").setExecutor(new CurrencyCommand(this));
+        this.getLogger().info("Currency command registered");
+        this.getCommand("curadmin").setExecutor(new CurrencyAdminCommand(this));
+        this.getLogger().info("Curadmin command registered");
 
         // Register Events
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(this), this);

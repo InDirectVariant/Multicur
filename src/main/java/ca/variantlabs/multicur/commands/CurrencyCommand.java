@@ -26,12 +26,12 @@ public class CurrencyCommand implements CommandExecutor {
         /*------------------------------------------------------------------------------------------------------------*/
         // Currency Send operations
         /*------------------------------------------------------------------------------------------------------------*/
-        if(command.getName().equalsIgnoreCase("currency send")){
+        if(strings[0].equalsIgnoreCase("send")){
             // Check to see if they have the permission to run the command
             if(!sender.hasPermission("multicur.currency.send")){
                 sender.sendMessage("No permission for that command!");
                 plugin.getLogger().info(MessageFormat.format("{0} - No permission to run Currency Send command!", sender.getDisplayName()));
-                return false;
+                return true;
             }
             // Check to make sure they put in a player to send currency too and an amount to send
             if(strings[0].isBlank()) {
@@ -62,18 +62,18 @@ public class CurrencyCommand implements CommandExecutor {
 
             // Get the balance of the sender and how much they want to send
             try {
-                double senderCurrency = Double.parseDouble(CurrencyOperations.getCurrency(plugin, sender.getUniqueId()));
+                double senderCurrency = Double.parseDouble(CurrencyOperations.getCurrency(plugin, sender.getUniqueId().toString()));
                 double amntToSend = Double.parseDouble(strings[1]);
                 // Check if the sender is sending more currency than they have available
-                if(senderCurrency < amntToSend){sender.sendMessage("You cannot send more currency than you currently have!"); return false;}
+                if(senderCurrency < amntToSend){sender.sendMessage("You cannot send more currency than you currently have!"); return true;}
 
                 // Perform the operations to transfer currency
                 try {
-                    CurrencyOperations.removeCurrency(plugin, sender.getUniqueId(), amntToSend);
-                    CurrencyOperations.addCurrency(plugin, receiver.getUniqueId(), amntToSend);
+                    CurrencyOperations.removeCurrency(plugin, sender.getUniqueId().toString(), amntToSend);
+                    CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), amntToSend);
                 } catch (Exception e){
                     plugin.getLogger().info(e.toString());
-                    return false;
+                    return true;
                 }
 
                 // Send messages to the players for the transaction
@@ -84,23 +84,23 @@ public class CurrencyCommand implements CommandExecutor {
             } catch(Exception e){
                 sender.sendMessage("An error occurred, please contact an administrator!");
                 plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to get Currency: {1}", sender.getDisplayName(), e));
-                return false;
+                return true;
             }
         }
 
         /*------------------------------------------------------------------------------------------------------------*/
         // Currency balance commands
         /*------------------------------------------------------------------------------------------------------------*/
-        else if (command.getName().equalsIgnoreCase("currency balance") || command.getName().equalsIgnoreCase("currency bal")){
+        else if (strings[0].equalsIgnoreCase("balance") || strings[0].equalsIgnoreCase("bal")){
             // Check to see if they have the permissions
             if(!sender.hasPermission("multicur.currency.balance")){
                 sender.sendMessage("No permission for that command!");
                 plugin.getLogger().info(MessageFormat.format("{0} - No permission to run Currency Send command!", sender.getDisplayName()));
-                return false;
+                return true;
             }
 
             try {
-                String balance = CurrencyOperations.getCurrency(plugin, sender.getUniqueId());
+                String balance = CurrencyOperations.getCurrency(plugin, sender.getUniqueId().toString());
 
                 sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
                 plugin.getLogger().info(MessageFormat.format("{0}'s balance is {1}", sender.getDisplayName(), balance));
@@ -108,11 +108,11 @@ public class CurrencyCommand implements CommandExecutor {
             } catch(Exception e){
                 sender.sendMessage("An error occurred, please contact an administrator!");
                 plugin.getLogger().info(MessageFormat.format("{0} - Could not get the balance of {0} due to an error: {1}", sender.getDisplayName(), e));
+                return true;
             }
         }
 
         // No input
-        sender.sendMessage("Available commands: send <player> <amount>, balance");
         return false;
     }
 

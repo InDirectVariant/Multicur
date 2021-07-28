@@ -44,14 +44,11 @@ public class PlayerJoin implements Listener {
                 // Get the configured starting balance for the currency
                 double start_balance = plugin.getConfig().getDouble("currency." + currency + ".starting");
                 // Create the player insert
-                String nsql = "INSERT INTO mcur_accounts (uuid, ?) VALUES (?, ?);";
+                String nsql = String.format("INSERT INTO mcur_accounts (uuid, %s) VALUES (%s, %f);", currency, uuid, start_balance);
                 try {
                     // Prepare the statement and name it nstmt (new statement)
                     PreparedStatement nstmt = Multicur.connection.prepareStatement(nsql);
                     // Insert the currency name, uuid, and starting balance
-                    nstmt.setString(1, currency + "_balance");
-                    nstmt.setString(2, uuid);
-                    nstmt.setDouble(3, start_balance);
                     // Execute the update
                     nstmt.executeUpdate();
                 } catch(SQLException e){

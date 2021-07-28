@@ -9,15 +9,13 @@ import java.util.*;
 
 public class CurrencyOperations {
     // Method to get the currency balance of a player
-    public static String getCurrency(JavaPlugin plugin, UUID player) throws Exception{
+    public static String getCurrency(JavaPlugin plugin, String player) throws Exception{
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
         String currency_name = currencies.get(0);
-        String sql = "SELECT ? FROM mcur_accounts WHERE uuid=?;";
+        String sql = String.format("SELECT %s FROM mcur_accounts WHERE uuid=%s;", currency_name, player.toString());
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            stmt.setString(1, currency_name + "_balance");
-            stmt.setString(2, player.toString());
             ResultSet results = stmt.executeQuery();
             return results.getNString(currency_name);
         } catch (SQLException e){
@@ -26,7 +24,7 @@ public class CurrencyOperations {
         }
     }
 
-    public static void  addCurrency(JavaPlugin plugin, UUID player, double amount) throws Exception {
+    public static void  addCurrency(JavaPlugin plugin, String player, double amount) throws Exception {
         // If there's a failure, throw an exception
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
@@ -36,12 +34,9 @@ public class CurrencyOperations {
         double current = Double.parseDouble(getCurrency(plugin, player));
         amount += current;
 
-        String sql = "UPDATE mcur_accounts SET ?=? WHERE uuid=?";
+        String sql = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=%s", currency_name, amount, player);
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            stmt.setString(1, currency_name + "_balance");
-            stmt.setDouble(2, amount);
-            stmt.setString(3, player.toString());
             stmt.executeUpdate();
         } catch(SQLException e){
             e.printStackTrace();
@@ -50,7 +45,7 @@ public class CurrencyOperations {
 
     }
 
-    public static void removeCurrency(JavaPlugin plugin, UUID player, double amount) throws Exception{
+    public static void removeCurrency(JavaPlugin plugin, String player, double amount) throws Exception{
         // If there's a failure, throw an exception
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
@@ -60,12 +55,9 @@ public class CurrencyOperations {
         double current = Double.parseDouble(getCurrency(plugin, player));
         amount -= current;
 
-        String sql = "UPDATE mcur_accounts SET ?=? WHERE uuid=?";
+        String sql = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=%s", currency_name, amount, player);
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            stmt.setString(1, currency_name + "_balance");
-            stmt.setDouble(2, amount);
-            stmt.setString(3, player.toString());
             stmt.executeUpdate();
         } catch(SQLException e){
             e.printStackTrace();
