@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import java.text.MessageFormat;
 import static org.bukkit.Bukkit.getPlayer;
 
-public class CurrencyCommand implements CommandExecutor {
+public class CurrencyCommandExecutor implements CommandExecutor {
 
     private final Multicur plugin;
 
-    public CurrencyCommand(Multicur plugin) {
+    public CurrencyCommandExecutor(Multicur plugin) {
         this.plugin = plugin;
     }
 

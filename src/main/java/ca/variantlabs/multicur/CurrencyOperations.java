@@ -8,60 +8,73 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class CurrencyOperations {
-    // Method to get the currency balance of a player
-    public static String getCurrency(JavaPlugin plugin, String player) throws Exception{
+
+    //Gets currency balance of player
+    public static String getCurrency(JavaPlugin plugin, String UUID) throws Exception {
+
+        //Gets currency name
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
-        String currency_name = currencies.get(0);
-        String sql = String.format("SELECT %s FROM mcur_accounts WHERE uuid=%s;", currency_name, player.toString());
+        String currencyName = currencies.get(0)+"_balance";
+
         try {
-            PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
+
+            //Creates and executes select statement
+            String selectSQL = String.format("SELECT %s FROM mcur_accounts WHERE uuid=\"%s\";", currencyName, UUID);
+            PreparedStatement stmt = Multicur.connection.prepareStatement(selectSQL);
             ResultSet results = stmt.executeQuery();
-            return results.getNString(currency_name);
-        } catch (SQLException e){
+            return results.getNString(currencyName);
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new Exception("SQL Exception, see console for details");
         }
     }
 
-    public static void  addCurrency(JavaPlugin plugin, String player, double amount) throws Exception {
-        // If there's a failure, throw an exception
+    public static void addCurrency(JavaPlugin plugin, String UUID, double amount) throws Exception {
+
+        //Gets currency name
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
-        String currency_name = currencies.get(0);
+        String currencyName = currencies.get(0)+"_balance";
 
-        // Get the current balance to determine what to set the new balance to
-        double current = Double.parseDouble(getCurrency(plugin, player));
-        amount += current;
+        //Gets current balance
+        double current = Double.parseDouble(getCurrency(plugin, UUID));
+        current += amount;
 
-        String sql = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=%s", currency_name, amount, player);
+        //Updates database
         try {
-            PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
+            String updateSQL = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=\"%s\"", currencyName, current, UUID);
+            PreparedStatement stmt = Multicur.connection.prepareStatement(updateSQL);
             stmt.executeUpdate();
-        } catch(SQLException e){
+        } catch(SQLException e) {
             e.printStackTrace();
-            throw new Exception("Error with the Database, see console for error log");
+            throw new Exception("SQL Exception, see console for details");
         }
-
     }
 
-    public static void removeCurrency(JavaPlugin plugin, String player, double amount) throws Exception{
-        // If there's a failure, throw an exception
+    public static void removeCurrency(JavaPlugin plugin, String UUID, double amount) throws Exception {
+
+        //Gets currency name
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
         List<String> currencies = new ArrayList<>(set_currencies);
-        String currency_name = currencies.get(0);
+        String currencyName = currencies.get(0)+"_balance";
 
-        // Get the current balance to determine what to set the new balance to
-        double current = Double.parseDouble(getCurrency(plugin, player));
-        amount = current - amount;
+        //Gets current balance
+        double current = Double.parseDouble(getCurrency(plugin, UUID));
+        current -= amount;
 
-        String sql = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=%s", currency_name, amount, player);
+        //If balance is less than 0, set to 0
+        if(current<0)
+            current=0;
+
+        //Updates database
         try {
-            PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
+            String updateSQL = String.format("UPDATE mcur_accounts SET %s=%f WHERE uuid=\"%s\"", currencyName, current, UUID);
+            PreparedStatement stmt = Multicur.connection.prepareStatement(updateSQL);
             stmt.executeUpdate();
-        } catch(SQLException e){
+        } catch(SQLException e) {
             e.printStackTrace();
-            throw new Exception("Error with the Database, see console for error log");
+            throw new Exception("SQL Exception, see console for details");
         }
     }
 }

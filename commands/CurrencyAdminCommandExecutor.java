@@ -13,11 +13,11 @@ import java.text.MessageFormat;
 
 import static org.bukkit.Bukkit.getPlayer;
 
-public class CurrencyAdminCommand implements CommandExecutor {
+public class CurrencyAdminCommandExecutor implements CommandExecutor {
 
     private final Multicur plugin;
 
-    public CurrencyAdminCommand(Multicur plugin){
+    public CurrencyAdminCommandExecutor(Multicur plugin){
         this.plugin = plugin;
     }
 

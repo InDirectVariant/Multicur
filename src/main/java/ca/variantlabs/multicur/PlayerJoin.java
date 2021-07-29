@@ -1,5 +1,6 @@
 package ca.variantlabs.multicur;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -13,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class PlayerJoin implements Listener {
+
     private final Multicur plugin;
 
     public PlayerJoin(Multicur plugin) {
@@ -21,44 +23,37 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        plugin.getLogger().info(String.format("Player %s has joined, initializing Multicur for %s!", event.getPlayer().getDisplayName(), event.getPlayer().getDisplayName()));
-        // Get the players UUID
-        String uuid = event.getPlayer().getUniqueId().toString();
-        // Create the query
-        String sql = String.format("SELECT * FROM mcur_accounts WHERE uuid=%s;", uuid);
-        plugin.getLogger().info(String.format("Query: %s", sql));
 
-        // Check to see if the player is already in the DB
+        //Gets player information
+        String uuid = event.getPlayer().getUniqueId().toString();
+
+        //Begins event handling
         try {
-            // Prepare the statement and name it stmt
-            PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
-            // Execute the query and get the results
-            ResultSet results = stmt.executeQuery();
-            // Check the results, if there are none then we need to create the player in the DB
+
+            //Prepares select SQL Statement
+            String selectSQL = String.format("SELECT * FROM mcur_accounts WHERE uuid=\"%s\"", uuid);
+            PreparedStatement selectStmt = Multicur.connection.prepareStatement(selectSQL);
+            ResultSet results = selectStmt.executeQuery();
+
+            //Checks to see if player already exists
             if(!results.next()){
-                // Get the name of the custom currency
+
+                //Gets the name of the currency
                 Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
                 List<String> currencies = new ArrayList<>(set_currencies);
                 String currency = currencies.get(0);
 
-                // Get the configured starting balance for the currency
-                double start_balance = plugin.getConfig().getDouble("currency." + currency + ".starting");
-                // Create the player insert
-                String nsql = String.format("INSERT INTO mcur_accounts (uuid, %s) VALUES (%s, %f);", currency, uuid, start_balance);
+                //Gets the configured starting balance for the currency
+                double startingBalance = plugin.getConfig().getDouble("currency." + currency + ".starting");
+                currency+="_balance";
+
+                //Inserts player row
                 try {
-                    // Prepare the statement and name it nstmt (new statement)
-                    PreparedStatement nstmt = Multicur.connection.prepareStatement(nsql);
-                    // Insert the currency name, uuid, and starting balance
-                    // Execute the update
-                    nstmt.executeUpdate();
-                } catch(SQLException e){
-                    // Catch and print any errors
-                    e.printStackTrace();
-                }
+                    String insertSQL = String.format("INSERT INTO mcur_accounts (uuid, %s) VALUES (\"%s\", %f);", currency, uuid, startingBalance);
+                    PreparedStatement insertStmt = Multicur.connection.prepareStatement(insertSQL);
+                    insertStmt.executeUpdate();
+                } catch(SQLException e)  { e.printStackTrace(); }
             }
-        } catch(SQLException e){
-            // Catch and print any errors
-            e.printStackTrace();
-        }
+        } catch(SQLException e) { e.printStackTrace(); }
     }
 }
