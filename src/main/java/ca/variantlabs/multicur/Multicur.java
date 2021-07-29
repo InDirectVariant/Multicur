@@ -83,7 +83,7 @@ public class Multicur extends JavaPlugin {
 
         //Register Commands
         this.getCommand("currency").setExecutor(new CurrencyCommand(this));
-        this.getCommand("currencyadmin").setExecutor(new CurrencyAdminCommand(this));
+        this.getCommand("curadmin").setExecutor(new CurrencyAdminCommand(this));
 
         // Register Events
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(this), this);

@@ -31,15 +31,15 @@ public class CurrencyAdminCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         //Checks that valid command was sent
-        if (command.getName().equalsIgnoreCase("currencyadmin")) {
+        if (command.getName().equalsIgnoreCase("curadmin")) {
 
             /*------------------------------------------------------------------------------------------------------------*/
-            // /currencyadmin give
+            // /curadmin give
             /*------------------------------------------------------------------------------------------------------------*/
             if (args[0].equalsIgnoreCase("give")) {
 
                 //Checks for valid permission
-                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.admin.give", "currencyadmin give"))
+                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.admin.give", "curadmin give"))
                     return false;
 
                 //Checks for valid command format
@@ -76,7 +76,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("remove")) {
 
                 //Checks for valid permission
-                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.admin.remove", "currencyadmin remove"))
+                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.admin.remove", "curadmin remove"))
                     return false;
 
                 //Checks for valid command format
@@ -93,11 +93,15 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Remove currency from victim
                 try {
-                    CurrencyOperations.removeCurrency(plugin, victim.getUniqueId().toString(), amountToRemove);
+                    if(!CurrencyOperations.removeCurrency(plugin, victim.getUniqueId().toString(), amountToRemove)){
+                     sender.sendMessage("You cannot remove more than the player's balance!");
+                     plugin.getLogger().info("Cannot remove more than the player's balance!");
+                     return true;
+                    }
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to remove Currency: {1}", player.getDisplayName(), e));
-                    return false;
+                    return true;
                 }
 
                 //Sends messages to both players that transaction was a success
@@ -113,7 +117,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("bal") || args[0].equalsIgnoreCase("balance")) {
 
                 //Checks for valid permission
-                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.admin.balance", "currencyadmin balance"))
+                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.admin.balance", "curadmin balance"))
                     return false;
 
                 //Checks for valid player to find
@@ -140,7 +144,6 @@ public class CurrencyAdminCommand implements CommandExecutor {
             // No command entered
             /*------------------------------------------------------------------------------------------------------------*/
             else {
-                sender.sendMessage("Available commands: /currencyadmin [give <player> <amount>]/[balance <player>]/[bal <player>]");
                 return false;
             }
         }

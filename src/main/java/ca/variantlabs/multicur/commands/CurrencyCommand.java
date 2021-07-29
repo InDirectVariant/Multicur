@@ -53,7 +53,7 @@ public class CurrencyCommand implements CommandExecutor {
 
                 // Get the balance of the sender and how much they want to send
                 try {
-                    double senderBalance = Double.parseDouble(CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString()));
+                    double senderBalance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString());
                     double amountToSend = Double.parseDouble(args[2]);
 
                     //Checks that player is sending a valid amount
@@ -93,7 +93,7 @@ public class CurrencyCommand implements CommandExecutor {
 
                 //Gets balance and sends message to player
                 try {
-                    String balance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString());
+                    double balance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString());
                     sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");

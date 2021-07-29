@@ -10,7 +10,7 @@ import java.util.*;
 public class CurrencyOperations {
 
     //Gets currency balance of player
-    public static String getCurrency(JavaPlugin plugin, String UUID) throws Exception {
+    public static double getCurrency(JavaPlugin plugin, String UUID) throws Exception {
 
         //Gets currency name
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
@@ -23,7 +23,9 @@ public class CurrencyOperations {
             String selectSQL = String.format("SELECT %s FROM mcur_accounts WHERE uuid=\"%s\";", currencyName, UUID);
             PreparedStatement stmt = Multicur.connection.prepareStatement(selectSQL);
             ResultSet results = stmt.executeQuery();
-            return results.getNString(currencyName);
+            results.next();
+            plugin.getLogger().info(String.valueOf(results.getDouble(currencyName)));
+            return results.getDouble(currencyName);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new Exception("SQL Exception, see console for details");
@@ -38,7 +40,7 @@ public class CurrencyOperations {
         String currencyName = currencies.get(0)+"_balance";
 
         //Gets current balance
-        double current = Double.parseDouble(getCurrency(plugin, UUID));
+        double current = getCurrency(plugin, UUID);
         current += amount;
 
         //Updates database
@@ -52,7 +54,7 @@ public class CurrencyOperations {
         }
     }
 
-    public static void removeCurrency(JavaPlugin plugin, String UUID, double amount) throws Exception {
+    public static boolean removeCurrency(JavaPlugin plugin, String UUID, double amount) throws Exception {
 
         //Gets currency name
         Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
@@ -60,12 +62,14 @@ public class CurrencyOperations {
         String currencyName = currencies.get(0)+"_balance";
 
         //Gets current balance
-        double current = Double.parseDouble(getCurrency(plugin, UUID));
+        double current = getCurrency(plugin, UUID);
         current -= amount;
 
         //If balance is less than 0, set to 0
         if(current<0)
-            current=0;
+            return false;
+
+
 
         //Updates database
         try {
@@ -76,5 +80,6 @@ public class CurrencyOperations {
             e.printStackTrace();
             throw new Exception("SQL Exception, see console for details");
         }
+        return true;
     }
 }
