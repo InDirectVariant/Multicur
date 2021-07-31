@@ -51,6 +51,16 @@ public class Validate {
             return true;
     }
 
+    public static boolean validateReceiverExistenceConsole(Multicur plugin, CommandSender sender, Player receiver) {
+        if (receiver == null) {
+            plugin.getLogger().info("Player does not exist");
+            sender.sendMessage("Specified player does not exist!");
+            return false;
+        }
+        else
+            return true;
+    }
+
     public static boolean validateSendCurrencyAmount(CommandSender sender, Double amountToSend, Double senderBalance) {
 
         //Checks that player is not sending 0 or less currency
