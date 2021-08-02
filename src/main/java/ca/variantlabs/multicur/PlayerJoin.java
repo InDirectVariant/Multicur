@@ -29,7 +29,7 @@ public class PlayerJoin implements Listener {
 
         //Begins event handling
         try {
-
+            plugin.getLogger().info(String.format("Checking for %s in the database", event.getPlayer().getDisplayName()));
             //Prepares select SQL Statement
             String selectSQL = String.format("SELECT * FROM mcur_accounts WHERE uuid=\"%s\"", uuid);
             PreparedStatement selectStmt = Multicur.connection.prepareStatement(selectSQL);
@@ -52,8 +52,10 @@ public class PlayerJoin implements Listener {
                     String insertSQL = String.format("INSERT INTO mcur_accounts (uuid, %s) VALUES (\"%s\", %f);", currency, uuid, startingBalance);
                     PreparedStatement insertStmt = Multicur.connection.prepareStatement(insertSQL);
                     insertStmt.executeUpdate();
+                    plugin.getLogger().info(String.format("Created %s in the database...", event.getPlayer().getDisplayName()));
                 } catch(SQLException e)  { e.printStackTrace(); }
             }
+            plugin.getLogger().info(String.format("Player %s already exists in the database...", event.getPlayer().getDisplayName()));
         } catch(SQLException e) { e.printStackTrace(); }
     }
 }
