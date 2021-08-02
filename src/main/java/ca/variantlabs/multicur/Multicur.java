@@ -18,7 +18,13 @@ public class Multicur extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.getLogger().info("Starting up Multicur...");
+        this.getLogger().info("\n" +
+                "    __  __       _ _   _           \n" +
+                "   |  \\/  |     | | | (_)                \n" +
+                "   | \\  / |_   _| | |_ _  ___ _   _ _ __ \n" +
+                "   | |\\/| | | | | | __| |/ __| | | | '__|\n" +
+                "   | |  | | |_| | | |_| | (__| |_| | |   \n" +
+                "   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|   \n\n");
 
         //Checks for plugin folder
         if (!this.getDataFolder().exists()) {
@@ -53,9 +59,11 @@ public class Multicur extends JavaPlugin {
                 connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
 
                 // Create userdata table
+                this.getLogger().info("Creating MySQL table if not exists...");
                 String createSQL = "CREATE TABLE IF NOT EXISTS mcur_accounts(id bigint NOT NULL AUTO_INCREMENT, uuid varchar(36), PRIMARY KEY(id));";
                 PreparedStatement createStmt = connection.prepareStatement(createSQL);
                 createStmt.executeUpdate();
+                this.getLogger().info("MySQL table created successfully or detected...");
 
                 // Get the name of currencies
                 Set<String> set_currencies = config.getConfigurationSection("currency").getKeys(false);
@@ -63,21 +71,23 @@ public class Multicur extends JavaPlugin {
                 String currency = currencies.get(0)+ "_balance";
 
                 //Create currency columns
+                this.getLogger().info("Create MySQL table columns for currencies...");
                 String currencySQL = String.format("ALTER TABLE mcur_accounts ADD %s double;", currency);
                 PreparedStatement currencyStmt = connection.prepareStatement(currencySQL);
                 currencyStmt.executeUpdate();
+                this.getLogger().info("Currency column created in MySQL table...");
 
             } catch (SQLException e) {
                 if(e.getErrorCode() == 1060)
-                    this.getLogger().info("Currency column already exists, skipping creation.");
+                    this.getLogger().info("Currency column already exists, skipping creation...");
                 else {
+                    this.getLogger().info("Error with MySQL:");
                     e.printStackTrace();
-                    this.getLogger().info("Error with MySQL, see above Stack Trace for debugging.");
                 }
             }
         }
         else {
-            this.getLogger().info("MYSQL has not been enabled, disabling Multicur!");
+            this.getLogger().info("MYSQL has not been enabled, disabling Multicur!\nPlease set MySQL to 'true' in config.yml and configure MySQL settings.");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
