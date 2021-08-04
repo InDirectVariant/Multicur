@@ -2,6 +2,7 @@ package ca.variantlabs.multicur;
 
 import ca.variantlabs.multicur.commands.CurrencyAdminCommand;
 import ca.variantlabs.multicur.commands.CurrencyCommand;
+import ca.variantlabs.multicur.utilities.MulticurPAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,6 +45,11 @@ public class Multicur extends JavaPlugin {
             this.getLogger().info("No config.yml file detected...");
             this.saveDefaultConfig();
             this.getLogger().info("Made a new config file!");
+        }
+
+        // Check for PAPI
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new MulticurPAPIExpansion(this).register();
         }
 
         FileConfiguration config = getConfig();
