@@ -33,7 +33,7 @@ public class CurrencyCommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("currency")) {
 
             /*------------------------------------------------------------------------------------------------------------*/
-            // /currency send
+            // /currency send <player> <currency> <amount>
             /*------------------------------------------------------------------------------------------------------------*/
             if (args[0].equalsIgnoreCase("send")) {
 
@@ -45,7 +45,9 @@ public class CurrencyCommand implements CommandExecutor {
                 if (!Validate.validateSendGiveRemoveInputs(plugin, sender, player.getDisplayName(), args))
                     return false;
 
+                //Initialize variables
                 Player receiver = getPlayer(args[1]);
+                String currency = args[2];
 
                 //Checks that receiver exists
                 if (!Validate.validateReceiverExistence(plugin, player, receiver))
@@ -53,8 +55,8 @@ public class CurrencyCommand implements CommandExecutor {
 
                 // Get the balance of the sender and how much they want to send
                 try {
-                    double senderBalance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString());
-                    double amountToSend = Double.parseDouble(args[2]);
+                    double senderBalance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency);
+                    double amountToSend = Double.parseDouble(args[3]);
 
                     //Checks that player is sending a valid amount
                     if (!Validate.validateSendCurrencyAmount(sender, amountToSend, senderBalance))
@@ -62,15 +64,15 @@ public class CurrencyCommand implements CommandExecutor {
 
                     //Performs the operation that transfers the currency
                     try {
-                        CurrencyOperations.removeCurrency(plugin, player.getUniqueId().toString(), amountToSend);
-                        CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), amountToSend);
+                        CurrencyOperations.removeCurrency(plugin, player.getUniqueId().toString(), currency, amountToSend);
+                        CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), currency, amountToSend);
                     } catch (Exception e) {
                         sender.sendMessage("An error occurred, please contact an administrator!");
                         plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to send Currency: {1}", player.getDisplayName(), e));
                         return false;
                     }
 
-                    //Sends messages to both players that transaction was a success
+                    //Send a message to both players that transaction was a success
                     sender.sendMessage(MessageFormat.format("You have sent {0} {1} currency!", receiver.getDisplayName(), amountToSend));
                     receiver.sendMessage(MessageFormat.format("You have received {0} currency from {1}!", amountToSend, player.getDisplayName()));
 
@@ -83,7 +85,7 @@ public class CurrencyCommand implements CommandExecutor {
             }
 
             /*------------------------------------------------------------------------------------------------------------*/
-            // /currency balance
+            // /currency balance <currency>
             /*------------------------------------------------------------------------------------------------------------*/
             else if (args[0].equalsIgnoreCase("bal") || args[0].equalsIgnoreCase("balance")) {
 
@@ -91,9 +93,12 @@ public class CurrencyCommand implements CommandExecutor {
                 if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.currency.balance", "currency balance"))
                     return false;
 
+                // Initialize variables
+                String currency = args [1];
+
                 //Gets balance and sends message to player
                 try {
-                    double balance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString());
+                    double balance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency);
                     sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");
@@ -108,7 +113,7 @@ public class CurrencyCommand implements CommandExecutor {
             // No command entered
             /*------------------------------------------------------------------------------------------------------------*/
             else {
-                sender.sendMessage("Available commands: /currency [send <player> <amount>]/[balance]/[bal]");
+                sender.sendMessage("Available commands: /currency send <player> <currency> <amount> \n /currency <balance/bal> <currency>");
                 return false;
             }
         }

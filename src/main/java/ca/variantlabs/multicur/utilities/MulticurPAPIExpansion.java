@@ -34,10 +34,15 @@ public class MulticurPAPIExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params){
+    public String onRequest(OfflinePlayer player, String identifier){
         try {
-            if (params.equalsIgnoreCase("balance")) {
-                return Double.toString(CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString()));
+            if (identifier.endsWith("balance")) {
+                int und = identifier.indexOf("_") + 1;
+                String currency = "";
+                for(int i = 0; i < und; i++){
+                   currency += identifier.charAt(i);
+                }
+                return Double.toString(CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency));
             }
         } catch(Exception e){
             return "-1";

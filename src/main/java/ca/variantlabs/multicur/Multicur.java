@@ -60,7 +60,8 @@ public class Multicur extends JavaPlugin {
             final String password = config.getString("mysql.password");
             final String url = config.getString("mysql.address");
 
-            // MySQL
+
+            // MySQL create table if it doesn't exist
             try {
                 connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
 
@@ -70,27 +71,34 @@ public class Multicur extends JavaPlugin {
                 PreparedStatement createStmt = connection.prepareStatement(createSQL);
                 createStmt.executeUpdate();
                 this.getLogger().info("MySQL table created successfully or detected...");
+            } catch(SQLException e) {
+                this.getLogger().info("Error with MySQL:");
+                e.printStackTrace();
+            }
 
+            // MySQL create currency columns if they don't exist
                 // Get the name of currencies
                 Set<String> set_currencies = config.getConfigurationSection("currency").getKeys(false);
                 List<String> currencies = new ArrayList<>(set_currencies);
-                String currency = currencies.get(0)+ "_balance";
+                for(int i = 0; i < currencies.size(); i++) {
+                    String currency = currencies.get(i) + "_balance";
 
-                //Create currency columns
-                this.getLogger().info("Create MySQL table columns for currencies...");
-                String currencySQL = String.format("ALTER TABLE mcur_accounts ADD %s double;", currency);
-                PreparedStatement currencyStmt = connection.prepareStatement(currencySQL);
-                currencyStmt.executeUpdate();
-                this.getLogger().info("Currency column created in MySQL table...");
-
-            } catch (SQLException e) {
-                if(e.getErrorCode() == 1060)
-                    this.getLogger().info("Currency column already exists, skipping creation...");
-                else {
-                    this.getLogger().info("Error with MySQL:");
-                    e.printStackTrace();
+                    //Create currency columns
+                    this.getLogger().info("Create MySQL table columns for currencies...");
+                    String currencySQL = String.format("ALTER TABLE mcur_accounts ADD %s double;", currency);
+                    try {
+                        PreparedStatement currencyStmt = connection.prepareStatement(currencySQL);
+                        currencyStmt.executeUpdate();
+                        this.getLogger().info(String.format("Currency column for %s created in MySQL table...", currency));
+                    } catch (SQLException e) {
+                        if(e.getErrorCode() == 1060)
+                            this.getLogger().info("Currency column already exists, skipping creation...");
+                        else {
+                            this.getLogger().info("Error with MySQL:");
+                            e.printStackTrace();
+                        }
+                    }
                 }
-            }
         }
         else {
             this.getLogger().info("MYSQL has not been enabled, disabling Multicur!\nPlease set MySQL to 'true' in config.yml and configure MySQL settings.");

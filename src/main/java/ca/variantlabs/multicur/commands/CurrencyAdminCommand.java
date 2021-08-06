@@ -34,7 +34,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("curadmin")) {
 
             /*------------------------------------------------------------------------------------------------------------*/
-            // /curadmin give
+            // /curadmin give <player> <currency> <amount>
             /*------------------------------------------------------------------------------------------------------------*/
             if (args[0].equalsIgnoreCase("give")) {
 
@@ -48,7 +48,8 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Initialize variables
                 Player receiver = getPlayer(args[1]);
-                double amountToGive = Double.parseDouble(args[2]);
+                String currency = args[2];
+                double amountToGive = Double.parseDouble(args[3]);
 
                 //Checks that receiver exists
                 if (sender instanceof Player) {
@@ -59,9 +60,10 @@ public class CurrencyAdminCommand implements CommandExecutor {
                         return false;
                 }
 
+
                 //Give currency to player
                 try {
-                    CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), amountToGive);
+                    CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), currency, amountToGive);
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to give Currency: {1}", "Console", e));
@@ -76,7 +78,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             }
 
             /*------------------------------------------------------------------------------------------------------------*/
-            // /currencyadmin remove
+            // /currencyadmin remove <player> <currency> <amount>
             /*------------------------------------------------------------------------------------------------------------*/
             if (args[0].equalsIgnoreCase("remove")) {
 
@@ -90,7 +92,8 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Initialize variables
                 Player victim = getPlayer(args[1]);
-                double amountToRemove = Double.parseDouble(args[2]);
+                String currency = args[2];
+                double amountToRemove = Double.parseDouble(args[3]);
 
                 //Checks that victim exists
                 //Checks that receiver exists
@@ -104,7 +107,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Remove currency from victim
                 try {
-                    if(!CurrencyOperations.removeCurrency(plugin, victim.getUniqueId().toString(), amountToRemove)){
+                    if(!CurrencyOperations.removeCurrency(plugin, victim.getUniqueId().toString(), currency, amountToRemove)){
                      sender.sendMessage("You cannot remove more than the player's balance!");
                      plugin.getLogger().info("Cannot remove more than the player's balance!");
                      return true;
@@ -123,7 +126,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
             }
 
             /*------------------------------------------------------------------------------------------------------------*/
-            // /currencyadmin balance
+            // /currencyadmin balance <player> <currency>
             /*------------------------------------------------------------------------------------------------------------*/
             else if (args[0].equalsIgnoreCase("bal") || args[0].equalsIgnoreCase("balance")) {
 
@@ -143,9 +146,12 @@ public class CurrencyAdminCommand implements CommandExecutor {
                         return false;
                 }
 
+                //Initialize variables
+                String currency = args[2];
+
                 //Sends message with balance
                 try {
-                    sender.sendMessage("Balance of " + playerToFind.getDisplayName() + ": " + CurrencyOperations.getCurrency(plugin, playerToFind.getUniqueId().toString()));
+                    sender.sendMessage("Balance of " + playerToFind.getDisplayName() + ": " + CurrencyOperations.getCurrency(plugin, playerToFind.getUniqueId().toString(), currency));
                     plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", "Console", playerToFind.getDisplayName()));
                 } catch (Exception e) {
                     sender.sendMessage(MessageFormat.format("Could not get the balance of {0} due to error: {1}", playerToFind.getDisplayName(), e));
