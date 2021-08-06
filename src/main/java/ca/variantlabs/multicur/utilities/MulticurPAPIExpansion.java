@@ -38,10 +38,8 @@ public class MulticurPAPIExpansion extends PlaceholderExpansion {
         try {
             if (identifier.endsWith("balance")) {
                 int und = identifier.indexOf("_") + 1;
-                String currency = "";
-                for(int i = 0; i < und; i++){
-                   currency += identifier.charAt(i);
-                }
+                String currency = identifier.substring(0, und-1);
+
                 return Double.toString(CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency));
             }
         } catch(Exception e){
