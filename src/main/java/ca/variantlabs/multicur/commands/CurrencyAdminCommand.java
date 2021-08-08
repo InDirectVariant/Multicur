@@ -24,12 +24,6 @@ public class CurrencyAdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String[] args) {
 
-        //Checks that command was sent by player
-        //if (!Validate.validateIsPlayer(plugin, sender))
-            //return false;
-
-        //Player player = (Player) sender;
-
         //Checks that valid command was sent
         if (command.getName().equalsIgnoreCase("curadmin")) {
 
@@ -38,18 +32,34 @@ public class CurrencyAdminCommand implements CommandExecutor {
             /*------------------------------------------------------------------------------------------------------------*/
             if (args[0].equalsIgnoreCase("give")) {
 
-                //Checks for valid permission
-                //if (!Validate.validateHasPermission(plugin, sender, "Console", "multicur.admin.give", "curadmin give"))
-                    //return false;
+                //Checks for valid permission for players
+                if (sender instanceof Player && !Validate.validateHasPermission(plugin, sender, ((Player) sender).getDisplayName(), "multicur.admin.give", "curadmin give"))
+                    return false;
 
                 //Checks for valid command format
-                if (!Validate.validateSendGiveRemoveInputs(plugin, sender, "Console", args))
+                if (sender instanceof Player && !Validate.validateSendGiveRemoveInputs(plugin, sender, ((Player) sender).getDisplayName(), args)) {
                     return false;
+                }
+                else if (!Validate.validateSendGiveRemoveInputs(plugin, sender, "Console", args)){
+                    return false;
+                }
 
                 //Initialize variables
                 Player receiver = getPlayer(args[1]);
                 String currency = args[2];
                 double amountToGive = Double.parseDouble(args[3]);
+
+                // Check that the currency exists
+                try {
+                    if (!CurrencyOperations.validateCurrencyExists(currency)) {
+                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        return false;
+                    }
+                } catch (Exception e){
+                    sender.sendMessage("Error occurred. Contact an admin");
+                    e.printStackTrace();
+                    return true;
+                }
 
                 //Checks that receiver exists
                 if (sender instanceof Player) {
@@ -66,7 +76,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
                     CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), currency, amountToGive);
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");
-                    plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to give Currency: {1}", "Console", e));
+                    plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to give Currency: {1}", sender.getName(), e));
                     return false;
                 }
 
@@ -82,18 +92,34 @@ public class CurrencyAdminCommand implements CommandExecutor {
             /*------------------------------------------------------------------------------------------------------------*/
             if (args[0].equalsIgnoreCase("remove")) {
 
-                //Checks for valid permission
-                //if (!Validate.validateHasPermission(plugin, sender, "Console", "multicur.admin.remove", "curadmin remove"))
-                    //return false;
+                //Checks for valid permission for players
+                if (sender instanceof Player && !Validate.validateHasPermission(plugin, sender, ((Player) sender).getDisplayName(), "multicur.admin.remove", "curadmin remove"))
+                    return false;
 
                 //Checks for valid command format
-                if (!Validate.validateSendGiveRemoveInputs(plugin, sender, "Console", args))
+                if (sender instanceof Player && !Validate.validateSendGiveRemoveInputs(plugin, sender, ((Player) sender).getDisplayName(), args)) {
                     return false;
+                }
+                else if (!Validate.validateSendGiveRemoveInputs(plugin, sender, "Console", args)){
+                    return false;
+                }
 
                 //Initialize variables
                 Player victim = getPlayer(args[1]);
                 String currency = args[2];
                 double amountToRemove = Double.parseDouble(args[3]);
+
+                // Check that the currency exists
+                try {
+                    if (!CurrencyOperations.validateCurrencyExists(currency)) {
+                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        return false;
+                    }
+                } catch (Exception e){
+                    sender.sendMessage("Error occurred. Contact an admin");
+                    e.printStackTrace();
+                    return true;
+                }
 
                 //Checks that victim exists
                 //Checks that receiver exists
@@ -146,12 +172,30 @@ public class CurrencyAdminCommand implements CommandExecutor {
                         return false;
                 }
 
+                //Check for currency
+                if(args.length != 3 ){
+                    sender.sendMessage("You must input a currency name to check!");
+                    return false;
+                }
+
                 //Initialize variables
                 String currency = args[2];
 
+                // Check that the currency exists
+                try {
+                    if (!CurrencyOperations.validateCurrencyExists(currency)) {
+                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        return false;
+                    }
+                } catch (Exception e){
+                    sender.sendMessage("Error occurred. Contact an admin");
+                    e.printStackTrace();
+                    return true;
+                }
+
                 //Sends message with balance
                 try {
-                    sender.sendMessage("Balance of " + playerToFind.getDisplayName() + ": " + CurrencyOperations.getCurrency(plugin, playerToFind.getUniqueId().toString(), currency));
+                    sender.sendMessage("Balance of " + playerToFind.getDisplayName() + ": " + CurrencyOperations.getCurrencyBalance(plugin, playerToFind.getUniqueId().toString(), currency));
                     plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", "Console", playerToFind.getDisplayName()));
                 } catch (Exception e) {
                     sender.sendMessage(MessageFormat.format("Could not get the balance of {0} due to error: {1}", playerToFind.getDisplayName(), e));

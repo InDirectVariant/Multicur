@@ -1,16 +1,29 @@
 package ca.variantlabs.multicur;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
 
 public class CurrencyOperations {
 
+    public static boolean validateCurrencyExists(String currency) throws Exception{
+        String sql = String.format("SHOW COLUMNS FROM `mcur_accounts` LIKE '%s';", currency + "_balance");
+        System.out.println(sql);
+        try {
+            PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
+            ResultSet results = stmt.executeQuery();
+            return results.next();
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new Exception("SQL Exception, see console for details:");
+        }
+    }
+
     //Gets currency balance of player
-    public static double getCurrency(JavaPlugin plugin, String UUID, String currency) throws Exception {
+    public static double getCurrencyBalance(JavaPlugin plugin, String UUID, String currency) throws Exception {
 
         //Gets currency name
         //Set<String> set_currencies = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("currency")).getKeys(false);
@@ -42,7 +55,7 @@ public class CurrencyOperations {
         //String currencyName = currencies.get(0)+"_balance";
 
         //Gets current balance
-        double current = getCurrency(plugin, UUID, currency);
+        double current = getCurrencyBalance(plugin, UUID, currency);
         double newBalance = current + amount;
 
         currency += "_balance";
@@ -66,7 +79,7 @@ public class CurrencyOperations {
         //String currencyName = currencies.get(0)+"_balance";
 
         //Gets current balance
-        double current = getCurrency(plugin, UUID, currency);
+        double current = getCurrencyBalance(plugin, UUID, currency);
         double newBalance = current - amount;
 
         currency += "_balance";

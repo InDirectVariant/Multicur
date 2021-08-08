@@ -3,7 +3,9 @@ package ca.variantlabs.multicur.utilities;
 import ca.variantlabs.multicur.Multicur;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.PreparedStatement;
 import java.text.MessageFormat;
 
 public class Validate {

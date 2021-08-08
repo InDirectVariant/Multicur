@@ -40,7 +40,10 @@ public class MulticurPAPIExpansion extends PlaceholderExpansion {
                 int und = identifier.indexOf("_") + 1;
                 String currency = identifier.substring(0, und-1);
 
-                return Double.toString(CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency));
+                // Check that the currency exists
+                try {if (!CurrencyOperations.validateCurrencyExists(currency)) {return null;}} catch (Exception e){e.printStackTrace();return null;}
+
+                return Double.toString(CurrencyOperations.getCurrencyBalance(plugin, player.getUniqueId().toString(), currency));
             }
         } catch(Exception e){
             return "-1";

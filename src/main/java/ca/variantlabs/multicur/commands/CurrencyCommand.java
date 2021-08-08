@@ -49,13 +49,25 @@ public class CurrencyCommand implements CommandExecutor {
                 Player receiver = getPlayer(args[1]);
                 String currency = args[2];
 
+                // Check that the currency exists
+                try {
+                    if (!CurrencyOperations.validateCurrencyExists(currency)) {
+                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        return false;
+                    }
+                } catch (Exception e){
+                    sender.sendMessage("Error occurred. Contact an admin");
+                    e.printStackTrace();
+                    return true;
+                }
+
                 //Checks that receiver exists
                 if (!Validate.validateReceiverExistence(plugin, player, receiver))
                     return false;
 
                 // Get the balance of the sender and how much they want to send
                 try {
-                    double senderBalance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency);
+                    double senderBalance = CurrencyOperations.getCurrencyBalance(plugin, player.getUniqueId().toString(), currency);
                     double amountToSend = Double.parseDouble(args[3]);
 
                     //Checks that player is sending a valid amount
@@ -93,12 +105,30 @@ public class CurrencyCommand implements CommandExecutor {
                 if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.currency.balance", "currency balance"))
                     return false;
 
+                //Check for currency
+                if(args.length != 3 ){
+                    sender.sendMessage("You must input a currency name to check!");
+                    return false;
+                }
+
                 // Initialize variables
                 String currency = args [1];
 
+                // Check that the currency exists
+                try {
+                    if (!CurrencyOperations.validateCurrencyExists(currency)) {
+                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        return false;
+                    }
+                } catch (Exception e){
+                    sender.sendMessage("Error occurred. Contact an admin");
+                    e.printStackTrace();
+                    return true;
+                }
+
                 //Gets balance and sends message to player
                 try {
-                    double balance = CurrencyOperations.getCurrency(plugin, player.getUniqueId().toString(), currency);
+                    double balance = CurrencyOperations.getCurrencyBalance(plugin, player.getUniqueId().toString(), currency);
                     sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");
