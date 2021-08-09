@@ -31,16 +31,30 @@ public class Validate {
 
     public static boolean validateSendGiveRemoveInputs(Multicur plugin, CommandSender sender, String displayName, String[] args) {
         if(args[1].isBlank()) {
-            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran {1} command without a player name", displayName, args[1]));
-            sender.sendMessage("You must input a player to {1} currency to/from!", args[1]);
+            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran {1} command without a player name", displayName, args[0]));
+            sender.sendMessage("You must input a player to {0} currency to/from!", args[0]);
             return false;
         } else if(args[2].isBlank()){
-            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran {1} command without a specified currency", displayName, args[1]));
-            sender.sendMessage("You must input the currency you are {1} the player!", args[1]);
+            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran {1} command without a specified currency", displayName, args[0]));
+            sender.sendMessage("You must input the currency you are {0} the player!", args[0]);
             return false;
         } else if(args[3].isBlank()){
-            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran {1] command without an amount", displayName, args[1]));
-            sender.sendMessage("You must input an amount of currency to {1} to/from the player!", args[1]);
+            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran {1] command without an amount", displayName, args[0]));
+            sender.sendMessage("You must input an amount of currency to {0} to/from the player!", args[0]);
+            return false;
+        }
+        else
+            return true;
+    }
+
+    public static boolean validateAdminBalanceInputs(Multicur plugin, CommandSender sender, String displayName, String[] args){
+        if(args[1].isBlank()){
+            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran balance command without a player name!", displayName));
+            sender.sendMessage("You must input a player to check their balance!");
+            return false;
+        } else if(args[2].isBlank()){
+            plugin.getLogger().info(MessageFormat.format("INFO: {0} ran balance command with a currency name!", displayName));
+            sender.sendMessage("You must input a currency name to check a balance!");
             return false;
         }
         else

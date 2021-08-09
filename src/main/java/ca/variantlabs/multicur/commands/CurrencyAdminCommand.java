@@ -160,6 +160,15 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 if (!Validate.validateHasPermission(plugin, sender, "Console", "multicur.admin.balance", "curadmin balance"))
                     return false;
 
+                //Check inputs
+                if(sender instanceof Player && !Validate.validateAdminBalanceInputs(plugin, sender, ((Player) sender).getDisplayName(), args)){
+                    return false;
+                } else{
+                    if (!Validate.validateAdminBalanceInputs(plugin, sender, "Console", args)){
+                        return false;
+                    }
+                }
+
                 //Checks for valid player to find
                 if (!Validate.validatePlayerNotNull(plugin, sender, "Console", args))
                     return false;
