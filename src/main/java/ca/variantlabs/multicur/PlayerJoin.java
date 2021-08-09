@@ -54,8 +54,9 @@ public class PlayerJoin implements Listener {
                     insertStmt.executeUpdate();
                     plugin.getLogger().info(String.format("Created %s in the database...", event.getPlayer().getDisplayName()));
                 } catch(SQLException e)  { e.printStackTrace(); }
+            } else {
+                plugin.getLogger().info(String.format("Player %s already exists in the database...", event.getPlayer().getDisplayName()));
             }
-            plugin.getLogger().info(String.format("Player %s already exists in the database...", event.getPlayer().getDisplayName()));
         } catch(SQLException e) { e.printStackTrace(); }
     }
 }
