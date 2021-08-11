@@ -6,7 +6,7 @@
 
     <groupId>ca.variantlabs.multicur</groupId>
     <artifactId>Multicur</artifactId>
-    <version>1.2.0-DEV</version>
+    <version>1.2.1-Release</version>
 
     <repositories>
         <!-- This adds the Spigot Maven repository to the build -->
