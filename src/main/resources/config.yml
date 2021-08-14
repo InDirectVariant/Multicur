@@ -24,7 +24,5 @@ currency:
     symbol: TO1
     # How much a player will start with when they first join
     starting: "0"
-    # The display format of the currency
-    format: '###,###.##'
     # Enable this to allow players to send the currency to each other
     pay: false

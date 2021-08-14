@@ -61,6 +61,11 @@ public class CurrencyCommand implements CommandExecutor {
                     return true;
                 }
 
+                // Check if sending the currency is allowed
+                if(!plugin.getConfig().getBoolean(String.format("%s.pay", currency))){
+                    sender.sendMessage("Sending that currency is not allowed!");
+                }
+
                 //Checks that receiver exists
                 if (!Validate.validateReceiverExistence(plugin, player, receiver))
                     return false;
