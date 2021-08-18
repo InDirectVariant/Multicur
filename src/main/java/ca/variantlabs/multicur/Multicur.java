@@ -9,9 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.yaml.snakeyaml.*;
 
 public class Multicur extends JavaPlugin {
 
@@ -25,7 +27,7 @@ public class Multicur extends JavaPlugin {
                 "   | \\  / |_   _| | |_ _  ___ _   _ _ __ \n" +
                 "   | |\\/| | | | | | __| |/ __| | | | '__|\n" +
                 "   | |  | | |_| | | |_| | (__| |_| | |   \n" +
-                "   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|   \n\n");
+                "   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|   \n\nVersion 1.2.1");
 
         //Checks for plugin folder
         if (!this.getDataFolder().exists()) {
@@ -39,12 +41,17 @@ public class Multicur extends JavaPlugin {
             }
         }
 
-        //Checks for config
+        //Checks for config and messages files
         final File configFile = new File(this.getDataFolder() + "/config.yml");
+        final File msgFile = new File(this.getDataFolder() + "/messages.yml");
         if (!configFile.exists()) {
             this.getLogger().info("No config.yml file detected...");
             this.saveDefaultConfig();
             this.getLogger().info("Made a new config file!");
+        } else if (!msgFile.exists()){
+            this.getLogger().info("No messages.yml file detected...");
+            this.saveResource("messages.yml", true);
+            this.getLogger().info("Made a new messages file!");
         }
 
         // Check for PAPI
@@ -124,5 +131,14 @@ public class Multicur extends JavaPlugin {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getMessagePrefix(){
+        return "[Multicur]";
+    }
+
+    public String getMessage(String message){
+        this.getResource("messages.yml").
+        return MessageFormat.format("Placeholding message, this needs to be changed for {0}", message);
     }
 }

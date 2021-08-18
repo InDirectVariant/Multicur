@@ -52,7 +52,10 @@ public class CurrencyCommand implements CommandExecutor {
                 // Check that the currency exists
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
-                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        String msg = plugin.getMessage("CurrencyDoesNotExist");
+                        msg.replace("[currencyName]", currency);
+                        sender.sendMessage(MessageFormat.format("{0}{1}", plugin.getMessagePrefix(), msg));
+                        //sender.sendMessage(MessageFormat.format("Currency with name {0} does not exist!", currency));
                         return false;
                     }
                 } catch (Exception e){
