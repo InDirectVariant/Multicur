@@ -13,7 +13,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.yaml.snakeyaml.*;
 
 public class Multicur extends JavaPlugin {
 
@@ -43,15 +42,10 @@ public class Multicur extends JavaPlugin {
 
         //Checks for config and messages files
         final File configFile = new File(this.getDataFolder() + "/config.yml");
-        final File msgFile = new File(this.getDataFolder() + "/messages.yml");
         if (!configFile.exists()) {
             this.getLogger().info("No config.yml file detected...");
             this.saveDefaultConfig();
             this.getLogger().info("Made a new config file!");
-        } else if (!msgFile.exists()){
-            this.getLogger().info("No messages.yml file detected...");
-            this.saveResource("messages.yml", true);
-            this.getLogger().info("Made a new messages file!");
         }
 
         // Check for PAPI
@@ -134,11 +128,10 @@ public class Multicur extends JavaPlugin {
     }
 
     public String getMessagePrefix(){
-        return "[Multicur]";
+        return getConfig().getString("Messages.MessagePrefix");
     }
 
     public String getMessage(String message){
-        this.getResource("messages.yml").
-        return MessageFormat.format("Placeholding message, this needs to be changed for {0}", message);
+        return getConfig().getString("Messages." + message);
     }
 }

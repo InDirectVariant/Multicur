@@ -26,3 +26,11 @@ currency:
     starting: "0"
     # Enable this to allow players to send the currency to each other
     pay: false
+
+# Message Customization Options
+# Allowed placeholders: [currencyName]
+Messages:
+  MessagePrefix: "&6(Multicur)"
+  CurrencyDoesNotExist: "&cCurrency with name [currencyName] does not exist!"
+  GenericError: "&cError occurred. Contact an admin"
+  CurrencyNotAllowed: "Sending that currency is not allowed!"

@@ -54,19 +54,18 @@ public class CurrencyCommand implements CommandExecutor {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
                         String msg = plugin.getMessage("CurrencyDoesNotExist");
                         msg.replace("[currencyName]", currency);
-                        sender.sendMessage(MessageFormat.format("{0}{1}", plugin.getMessagePrefix(), msg));
-                        //sender.sendMessage(MessageFormat.format("Currency with name {0} does not exist!", currency));
+                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
                     }
                 } catch (Exception e){
-                    sender.sendMessage("Error occurred. Contact an admin");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
                     e.printStackTrace();
                     return true;
                 }
 
                 // Check if sending the currency is allowed
                 if(!plugin.getConfig().getBoolean(String.format("%s.pay", currency))){
-                    sender.sendMessage("Sending that currency is not allowed!");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("CurrencyNotAllowed")));
                 }
 
                 //Checks that receiver exists
