@@ -65,12 +65,19 @@ public class CurrencyCommand implements CommandExecutor {
 
                 // Check if sending the currency is allowed
                 if(!plugin.getConfig().getBoolean(String.format("%s.pay", currency))){
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("CurrencyNotAllowed")));
+                    String msg = plugin.getMessage("CurrencyNotAllowed");
+                    msg.replace("[currencyName]", currency);
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                 }
 
                 //Checks that receiver exists
-                if (!Validate.validateReceiverExistence(plugin, player, receiver))
+                if (!Validate.validateReceiverExistence(plugin, player, receiver)) {
+                    String msg = plugin.getMessage("ReceiverDoesNotExist");
+                    msg.replace("[currencyName]", currency);
+                    msg.replace("[targetName]", args[1]);
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                     return false;
+                }
 
                 // Get the balance of the sender and how much they want to send
                 try {
@@ -78,26 +85,40 @@ public class CurrencyCommand implements CommandExecutor {
                     double amountToSend = Double.parseDouble(args[3]);
 
                     //Checks that player is sending a valid amount
-                    if (!Validate.validateSendCurrencyAmount(sender, amountToSend, senderBalance))
+                    if (!Validate.validateSendCurrencyAmount(sender, amountToSend, senderBalance)) {
+                        String msg = plugin.getMessage("InvalidCurrencyAmount");
+                        msg.replace("[currencyName]", currency);
+                        msg.replace("[targetName]", args[1]);
+                        msg.replace("[sendAmount]", Double.toString(amountToSend));
+                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
+                    }
 
                     //Performs the operation that transfers the currency
                     try {
                         CurrencyOperations.removeCurrency(plugin, player.getUniqueId().toString(), currency, amountToSend);
                         CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), currency, amountToSend);
                     } catch (Exception e) {
-                        sender.sendMessage("An error occurred, please contact an administrator!");
+                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
                         plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to send Currency: {1}", player.getDisplayName(), e));
                         return false;
                     }
 
                     //Send a message to both players that transaction was a success
-                    sender.sendMessage(MessageFormat.format("You have sent {0} {1} currency!", receiver.getDisplayName(), amountToSend));
-                    receiver.sendMessage(MessageFormat.format("You have received {0} currency from {1}!", amountToSend, player.getDisplayName()));
+                    String senderMsg = plugin.getMessage("SendCurrencySuccessForSender");
+                    senderMsg.replace("[currencyName]", currency);
+                    senderMsg.replace("[targetName]", args[1]);
+                    senderMsg.replace("[sendAmount]", Double.toString(amountToSend));
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), senderMsg));
 
+                    String receiverMsg = plugin.getMessage("SendCurrencySuccessForReceiver");
+                    receiverMsg.replace("[currencyName]", currency);
+                    receiverMsg.replace("[senderName]", player.getDisplayName());
+                    receiverMsg.replace("[sendAmount]", Double.toString(amountToSend));
+                    receiver.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), receiverMsg));
                     return true;
                 } catch (Exception e) {
-                    sender.sendMessage("An error occurred, please contact an administrator!");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to get Currency: {1}", player.getDisplayName(), e));
                     return false;
                 }
