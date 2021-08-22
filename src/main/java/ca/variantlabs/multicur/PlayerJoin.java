@@ -29,7 +29,7 @@ public class PlayerJoin implements Listener {
 
         //Begins event handling
         try {
-            plugin.getLogger().info(String.format("Checking for %s in the database", event.getPlayer().getDisplayName()));
+            plugin.getLogger().info(String.format("Checking for %s in the database...", event.getPlayer().getDisplayName()));
             //Prepares select SQL Statement
             String selectSQL = String.format("SELECT * FROM mcur_accounts WHERE uuid=\"%s\"", uuid);
             PreparedStatement selectStmt = Multicur.connection.prepareStatement(selectSQL);
