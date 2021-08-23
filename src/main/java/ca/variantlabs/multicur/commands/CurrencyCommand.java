@@ -38,8 +38,10 @@ public class CurrencyCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("send")) {
 
                 //Checks for valid permission
-                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.currency.send", "currency send"))
+                if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.currency.send", "currency send")) {
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("NoPermission")));
                     return false;
+                }
 
                 //Checks for valid command format
                 if (!Validate.validateSendGiveRemoveInputs(plugin, sender, player.getDisplayName(), args))
@@ -135,7 +137,7 @@ public class CurrencyCommand implements CommandExecutor {
 
                 //Check for currency
                 if(args.length != 3 ){
-                    sender.sendMessage("You must input a currency name to check!");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("MissingCurrencyInput")));
                     return false;
                 }
 
@@ -145,11 +147,13 @@ public class CurrencyCommand implements CommandExecutor {
                 // Check that the currency exists
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
-                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        String msg = plugin.getMessage("CurrencyDoesNotExist");
+                        msg.replace("[currencyName]", currency);
+                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
                     }
                 } catch (Exception e){
-                    sender.sendMessage("Error occurred. Contact an admin");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
                     e.printStackTrace();
                     return true;
                 }
@@ -157,9 +161,17 @@ public class CurrencyCommand implements CommandExecutor {
                 //Gets balance and sends message to player
                 try {
                     double balance = CurrencyOperations.getCurrencyBalance(plugin, player.getUniqueId().toString(), currency);
-                    sender.sendMessage(MessageFormat.format("Your balance is {0}!", balance));
+                    String msg = plugin.getMessage("Balance");
+                    msg.replace("[currencyName]", currency);
+                    msg.replace("[balance]", Double.toString(balance));
+                    if(plugin.getConfig().getString("Currency." + currency + ".symbol").isBlank()){
+                        msg.replace("[currencySymbol]", "");
+                    } else {
+                        msg.replace("[currencySymbol]", plugin.getConfig().getString("Currency." + currency + ".symbol"));
+                    }
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                 } catch (Exception e) {
-                    sender.sendMessage("An error occurred, please contact an administrator!");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to get Currency: {1}", player.getDisplayName(), e));
                     return false;
                 }
@@ -172,7 +184,7 @@ public class CurrencyCommand implements CommandExecutor {
             /*------------------------------------------------------------------------------------------------------------*/
             else {
                 sender.sendMessage("Available commands: /currency send <player> <currency> <amount> \n /currency <balance/bal> <currency>");
-                return false;
+                return true;
             }
         }
         return false;
