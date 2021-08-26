@@ -98,6 +98,17 @@ public class Validate {
             return true;
     }
 
+    public static boolean validateGiveCurrencyAmount(CommandSender sender, Double amountToSend) {
+
+        //Checks that player is not sending 0 or less currency
+        if(amountToSend <= 0) {
+            sender.sendMessage("You can not send 0 or less currency!");
+            return false;
+        }
+        else
+            return true;
+    }
+
     public static boolean validatePlayerNotNull (Multicur plugin, CommandSender sender, String displayName, String[] args) {
 
         // Check to see if there was a player added
