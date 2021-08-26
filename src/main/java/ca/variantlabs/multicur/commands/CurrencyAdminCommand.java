@@ -53,7 +53,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
                         String msg = plugin.getMessage("CurrencyDoesNotExist");
-                        msg.replace("[currencyName]", currency);
+                        msg = msg.replace("[currencyName]", currency);
                         sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
                     }
@@ -67,16 +67,16 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 if (sender instanceof Player) {
                     if (!Validate.validateReceiverExistence(plugin, (Player) sender, receiver)) {
                         String msg = plugin.getMessage("ReceiverDoesNotExist");
-                        msg.replace("[currencyName]", currency);
-                        msg.replace("[targetName]", args[1]);
+                        msg = msg.replace("[currencyName]", currency);
+                        msg = msg.replace("[targetName]", args[1]);
                         sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
                     }
                 } else {
                     if(!Validate.validateReceiverExistenceConsole(plugin, sender, receiver)) {
                         String msg = plugin.getMessage("ReceiverDoesNotExist");
-                        msg.replace("[currencyName]", currency);
-                        msg.replace("[targetName]", args[1]);
+                        msg = msg.replace("[currencyName]", currency);
+                        msg = msg.replace("[targetName]", args[1]);
                         sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
                     }
@@ -85,15 +85,16 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 //Checks that player is sending a valid amount
                 if (!Validate.validateGiveCurrencyAmount(sender, amountToGive)) {
                     String msg = plugin.getMessage("InvalidCurrencyAmount");
-                    msg.replace("[currencyName]", currency);
-                    msg.replace("[targetName]", args[1]);
-                    msg.replace("[sendAmount]", Double.toString(amountToGive));
+                    msg = msg.replace("[currencyName]", currency);
+                    msg = msg.replace("[targetName]", args[1]);
+                    msg = msg.replace("[sendAmount]", Double.toString(amountToGive));
                     sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                     return false;
                 }
 
                 //Give currency to player
                 try {
+                    assert receiver != null;
                     CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), currency, amountToGive);
                 } catch (Exception e) {
                     sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
@@ -103,19 +104,19 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Send a message to both players that transaction was a success
                 String senderMsg = plugin.getMessage("SendCurrencySuccessForSender");
-                senderMsg.replace("[currencyName]", currency);
-                senderMsg.replace("[targetName]", args[1]);
-                senderMsg.replace("[sendAmount]", Double.toString(amountToGive));
+                senderMsg = senderMsg.replace("[currencyName]", currency);
+                senderMsg = senderMsg.replace("[targetName]", args[1]);
+                senderMsg = senderMsg.replace("[sendAmount]", Double.toString(amountToGive));
                 sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), senderMsg));
 
                 String receiverMsg = plugin.getMessage("SendCurrencySuccessForReceiver");
-                receiverMsg.replace("[currencyName]", currency);
+                receiverMsg = receiverMsg.replace("[currencyName]", currency);
                 if(sender instanceof Player) {
-                    receiverMsg.replace("[senderName]", ((Player) sender).getDisplayName());
+                    receiverMsg = receiverMsg.replace("[senderName]", ((Player) sender).getDisplayName());
                 } else{
-                    receiverMsg.replace("[senderName]", "Server");
+                    receiverMsg = receiverMsg.replace("[senderName]", "Server");
                 }
-                receiverMsg.replace("[sendAmount]", Double.toString(amountToGive));
+                receiverMsg = receiverMsg.replace("[sendAmount]", Double.toString(amountToGive));
                 receiver.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), receiverMsg));
                 return true;
             }
