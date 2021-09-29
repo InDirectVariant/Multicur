@@ -146,11 +146,13 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 // Check that the currency exists
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
-                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        String msg = plugin.getMessage("CurrencyDoesNotExist");
+                        msg = msg.replace("[currencyName]", currency);
+                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
                         return false;
                     }
                 } catch (Exception e){
-                    sender.sendMessage("Error occurred. Contact an admin");
+                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
                     e.printStackTrace();
                     return true;
                 }
@@ -168,9 +170,11 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 //Remove currency from victim
                 try {
                     if(!CurrencyOperations.removeCurrency(plugin, victim.getUniqueId().toString(), currency, amountToRemove)){
-                     sender.sendMessage("You cannot remove more than the player's balance!");
-                     plugin.getLogger().info("Cannot remove more than the player's balance!");
-                     return true;
+                        String msg = plugin.getMessage("RemoveInvalidAmount");
+                        msg = msg.replace("[currencyName]", currency);
+                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                        plugin.getLogger().info("Cannot remove more than the player's balance!");
+                        return true;
                     }
                 } catch (Exception e) {
                     sender.sendMessage("An error occurred, please contact an administrator!");
