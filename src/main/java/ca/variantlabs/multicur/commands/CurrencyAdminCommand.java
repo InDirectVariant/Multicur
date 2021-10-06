@@ -177,14 +177,14 @@ public class CurrencyAdminCommand implements CommandExecutor {
                         return true;
                     }
                 } catch (Exception e) {
-                    sender.sendMessage("An error occurred, please contact an administrator!");
+                    sender.sendMessage(MessageFormat.format("{0} &cAn error occurred, please contact an administrator!", plugin.getMessagePrefix()));
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to remove Currency: {1}", "Console", e));
                     return true;
                 }
 
                 //Sends messages to both players that transaction was a success
-                sender.sendMessage(MessageFormat.format("You have removed {0} currency from {1}!", amountToRemove, victim.getDisplayName()));
-                victim.sendMessage(MessageFormat.format("You had {0} currency removed!", amountToRemove));
+                sender.sendMessage(MessageFormat.format("{0} &cYou have removed {1} currency from {2}!", plugin.getMessagePrefix(), amountToRemove, victim.getDisplayName()));
+                victim.sendMessage(MessageFormat.format("{0} &cYou had {1} currency removed!", plugin.getMessagePrefix(), amountToRemove));
 
                 return true;
             }
@@ -221,7 +221,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Check for currency
                 if(args.length != 3 ){
-                    sender.sendMessage("You must input a currency name to check!");
+                    sender.sendMessage(MessageFormat.format("{0} &cYou must input a currency name to check!", plugin.getMessagePrefix()));
                     return false;
                 }
 
@@ -231,21 +231,28 @@ public class CurrencyAdminCommand implements CommandExecutor {
                 // Check that the currency exists
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
-                        sender.sendMessage(String.format("Currency with name %s does not exist!", currency));
+                        sender.sendMessage(MessageFormat.format("{0} &cCurrency with name {1} does not exist!", plugin.getMessagePrefix(), currency));
                         return false;
                     }
                 } catch (Exception e){
-                    sender.sendMessage("Error occurred. Contact an admin");
+                    sender.sendMessage(MessageFormat.format("{0} &cError occurred. Contact an admin", plugin.getMessagePrefix()));
                     e.printStackTrace();
                     return true;
                 }
 
                 //Sends message with balance
                 try {
-                    sender.sendMessage("Balance of " + playerToFind.getDisplayName() + ": " + CurrencyOperations.getCurrencyBalance(plugin, playerToFind.getUniqueId().toString(), currency));
+                    sender.sendMessage(
+                            MessageFormat.format(
+                                    "{0} &cBalance of {1}: {2}",
+                                    plugin.getMessagePrefix(),
+                                    playerToFind.getDisplayName(),
+                                    CurrencyOperations.getCurrencyBalance(plugin, playerToFind.getUniqueId().toString(), currency)
+                            )
+                    );
                     plugin.getLogger().info(MessageFormat.format("{0} - Viewed {1}'s balance!", "Console", playerToFind.getDisplayName()));
                 } catch (Exception e) {
-                    sender.sendMessage(MessageFormat.format("Could not get the balance of {0} due to error: {1}", playerToFind.getDisplayName(), e));
+                    sender.sendMessage(MessageFormat.format("{0} &cCould not get the balance of {1} due to error: {2}", plugin.getMessagePrefix(), playerToFind.getDisplayName(), e));
                     plugin.getLogger().info(MessageFormat.format("{0} - Could not get balance due to error: {1}", playerToFind.getDisplayName(), e));
                     return false;
                 }
