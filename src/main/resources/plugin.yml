@@ -7,12 +7,12 @@ softdepend: [PlaceholderAPI]
 commands:
   currency:
     description: Main base command for player commands
-    usage: /currency <balance/send> [player] [amount]
+    usage: /currency <balance/send> [player] [currency] [amount]
     permission: multicur.currency
     permission-message: You don't have permission to use this command!
   curadmin:
     description: Main base command for admin commands
-    usage: /curadmin <balance/give/remove> <player> [amount]
+    usage: /curadmin <balance/give/remove> <player> [currency] [amount]
     permission: multicur.admin
     permission-message: You don't have permission to use this command!
 permissions:

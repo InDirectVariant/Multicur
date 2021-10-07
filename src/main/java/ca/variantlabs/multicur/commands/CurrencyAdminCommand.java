@@ -169,6 +169,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Remove currency from victim
                 try {
+                    assert victim != null;
                     if(!CurrencyOperations.removeCurrency(plugin, victim.getUniqueId().toString(), currency, amountToRemove)){
                         String msg = plugin.getMessage("RemoveInvalidAmount");
                         msg = msg.replace("[currencyName]", currency);
@@ -242,6 +243,7 @@ public class CurrencyAdminCommand implements CommandExecutor {
 
                 //Sends message with balance
                 try {
+                    assert playerToFind != null;
                     sender.sendMessage(
                             MessageFormat.format(
                                     "{0} &cBalance of {1}: {2}",
