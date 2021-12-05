@@ -1,6 +1,5 @@
 package ca.variantlabs.multicur;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
@@ -11,7 +10,6 @@ public class CurrencyOperations {
 
     public static boolean validateCurrencyExists(String currency) throws Exception{
         String sql = String.format("SHOW COLUMNS FROM `mcur_accounts` LIKE '%s';", currency + "_balance");
-        System.out.println(sql);
         try {
             PreparedStatement stmt = Multicur.connection.prepareStatement(sql);
             ResultSet results = stmt.executeQuery();
@@ -39,7 +37,6 @@ public class CurrencyOperations {
             PreparedStatement stmt = Multicur.connection.prepareStatement(selectSQL);
             ResultSet results = stmt.executeQuery();
             results.next();
-            plugin.getLogger().info(String.valueOf(results.getDouble(currency)));
             return results.getDouble(currency);
         } catch (SQLException e) {
             e.printStackTrace();

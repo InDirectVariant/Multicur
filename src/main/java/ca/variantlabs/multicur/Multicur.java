@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class Multicur extends JavaPlugin {
                 "   | \\  / |_   _| | |_ _  ___ _   _ _ __ \n" +
                 "   | |\\/| | | | | | __| |/ __| | | | '__|\n" +
                 "   | |  | | |_| | | |_| | (__| |_| | |   \n" +
-                "   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|   \n\nVersion 1.2.1");
+                "   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|   \n\nVersion 1.2.3");
 
         //Checks for plugin folder
         if (!this.getDataFolder().exists()) {
@@ -129,9 +128,5 @@ public class Multicur extends JavaPlugin {
 
     public String getMessagePrefix(){
         return getConfig().getString("Messages.MessagePrefix");
-    }
-
-    public String getMessage(String message){
-        return getConfig().getString("Messages." + message);
     }
 }

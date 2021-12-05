@@ -41,7 +41,7 @@ public class CurrencyCommand implements CommandExecutor {
 
                 //Checks for valid permission
                 if (!Validate.validateHasPermission(plugin, sender, player.getDisplayName(), "multicur.currency.send", "currency send")) {
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("NoPermission")));
+                    sender.sendMessage(MessageFormat.format("{0} You do not have permission for that!", plugin.getMessagePrefix()));
                     return false;
                 }
 
@@ -56,30 +56,23 @@ public class CurrencyCommand implements CommandExecutor {
                 // Check that the currency exists
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
-                        String msg = plugin.getMessage("CurrencyDoesNotExist");
-                        msg = msg.replace("[currencyName]", currency);
-                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                        sender.sendMessage(MessageFormat.format("{0} That currency does not exist!", plugin.getMessagePrefix()));
                         return false;
                     }
                 } catch (Exception e){
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
+                    sender.sendMessage(MessageFormat.format("{0} An error occurred, please contact an admin!", plugin.getMessagePrefix()));
                     e.printStackTrace();
                     return true;
                 }
 
                 // Check if sending the currency is allowed
                 if(!plugin.getConfig().getBoolean(String.format("%s.pay", currency))){
-                    String msg = plugin.getMessage("CurrencyNotAllowed");
-                    msg = msg.replace("[currencyName]", currency);
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                    sender.sendMessage(MessageFormat.format("{0} You cannot send that currency!", plugin.getMessagePrefix()));
                 }
 
                 //Checks that receiver exists
                 if (!Validate.validateReceiverExistence(plugin, player, receiver)) {
-                    String msg = plugin.getMessage("ReceiverDoesNotExist");
-                    msg = msg.replace("[currencyName]", currency);
-                    msg = msg.replace("[targetName]", args[1]);
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                    sender.sendMessage(MessageFormat.format("{0} That receiver does not exist!", plugin.getMessagePrefix()));
                     return false;
                 }
 
@@ -90,11 +83,7 @@ public class CurrencyCommand implements CommandExecutor {
 
                     //Checks that player is sending a valid amount
                     if (!Validate.validateSendCurrencyAmount(sender, amountToSend, senderBalance)) {
-                        String msg = plugin.getMessage("InvalidCurrencyAmount");
-                        msg = msg.replace("[currencyName]", currency);
-                        msg = msg.replace("[targetName]", args[1]);
-                        msg = msg.replace("[sendAmount]", Double.toString(amountToSend));
-                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                        sender.sendMessage(MessageFormat.format("{0} Please enter a valid amount!", plugin.getMessagePrefix()));
                         return false;
                     }
 
@@ -104,26 +93,18 @@ public class CurrencyCommand implements CommandExecutor {
                         assert receiver != null;
                         CurrencyOperations.addCurrency(plugin, receiver.getUniqueId().toString(), currency, amountToSend);
                     } catch (Exception e) {
-                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
+                        sender.sendMessage(MessageFormat.format("{0} An error occurred, please contact an admin!", plugin.getMessagePrefix()));
                         plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to send Currency: {1}", player.getDisplayName(), e));
                         return false;
                     }
 
                     //Send a message to both players that transaction was a success
-                    String senderMsg = plugin.getMessage("SendCurrencySuccessForSender");
-                    senderMsg = senderMsg.replace("[currencyName]", currency);
-                    senderMsg = senderMsg.replace("[targetName]", args[1]);
-                    senderMsg = senderMsg.replace("[sendAmount]", Double.toString(amountToSend));
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), senderMsg));
+                    sender.sendMessage(MessageFormat.format("{0} You have sent {1} {2} to {3}!", plugin.getMessagePrefix(), amountToSend, currency, receiver.getDisplayName()));
 
-                    String receiverMsg = plugin.getMessage("SendCurrencySuccessForReceiver");
-                    receiverMsg = receiverMsg.replace("[currencyName]", currency);
-                    receiverMsg = receiverMsg.replace("[senderName]", player.getDisplayName());
-                    receiverMsg = receiverMsg.replace("[sendAmount]", Double.toString(amountToSend));
-                    receiver.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), receiverMsg));
+                    receiver.sendMessage(MessageFormat.format("{0} You have received {1} {2} from {3}!", plugin.getMessagePrefix(), amountToSend, currency, ((Player) sender).getDisplayName()));
                     return true;
                 } catch (Exception e) {
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
+                    sender.sendMessage(MessageFormat.format("{0} An error occurred, please contact an admin!", plugin.getMessagePrefix()));
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to get Currency: {1}", player.getDisplayName(), e));
                     return false;
                 }
@@ -139,8 +120,8 @@ public class CurrencyCommand implements CommandExecutor {
                     return false;
 
                 //Check for currency
-                if(args.length != 3 ){
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("MissingCurrencyInput")));
+                if(args.length != 2 ){
+                    sender.sendMessage(MessageFormat.format("{0} You must enter a currency!", plugin.getMessagePrefix()));
                     return false;
                 }
 
@@ -150,13 +131,11 @@ public class CurrencyCommand implements CommandExecutor {
                 // Check that the currency exists
                 try {
                     if (!CurrencyOperations.validateCurrencyExists(currency)) {
-                        String msg = plugin.getMessage("CurrencyDoesNotExist");
-                        msg = msg.replace("[currencyName]", currency);
-                        sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                        sender.sendMessage(MessageFormat.format("{0} That currency does not exist!", plugin.getMessagePrefix()));
                         return false;
                     }
                 } catch (Exception e){
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
+                    sender.sendMessage(MessageFormat.format("{0} An error occurred, please contact an admin!", plugin.getMessagePrefix()));
                     e.printStackTrace();
                     return true;
                 }
@@ -164,17 +143,9 @@ public class CurrencyCommand implements CommandExecutor {
                 //Gets balance and sends message to player
                 try {
                     double balance = CurrencyOperations.getCurrencyBalance(plugin, player.getUniqueId().toString(), currency);
-                    String msg = plugin.getMessage("Balance");
-                    msg = msg.replace("[currencyName]", currency);
-                    msg = msg.replace("[balance]", Double.toString(balance));
-                    if(Objects.requireNonNull(plugin.getConfig().getString("Currency." + currency + ".symbol")).isBlank()){
-                        msg = msg.replace("[currencySymbol]", "");
-                    } else {
-                        msg = msg.replace("[currencySymbol]", Objects.requireNonNull(plugin.getConfig().getString("Currency." + currency + ".symbol")));
-                    }
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), msg));
+                    sender.sendMessage(MessageFormat.format("{0} You have {1} {2}", plugin.getMessagePrefix(), balance, currency));
                 } catch (Exception e) {
-                    sender.sendMessage(MessageFormat.format("{0} {1}", plugin.getMessagePrefix(), plugin.getMessage("GenericError")));
+                    sender.sendMessage(MessageFormat.format("{0} An error occurred, please contact an admin!", plugin.getMessagePrefix()));
                     plugin.getLogger().info(MessageFormat.format("{0} - Error occurred with MySQL operation to get Currency: {1}", player.getDisplayName(), e));
                     return false;
                 }

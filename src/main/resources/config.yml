@@ -28,17 +28,5 @@ currency:
     pay: false
 
 # Message Customization Options
-# Allowed placeholders: [currencyName] [targetName] [sendAmount] [senderName]
 Messages:
   MessagePrefix: "&6(Multicur)"
-  CurrencyDoesNotExist: "&cCurrency with name [currencyName] does not exist!"
-  CurrencyNotAllowed: "&cSending that [currencyName] is not allowed!"
-  ReceiverDoesNotExist: "&cThe player [targetName] does not exist!"
-  InvalidCurrencyAmount: "&cYou cannot send [sendAmount] to [targetName]!"
-  SendCurrencySuccessForSender: "&6You have sent [sendAmount] [currencyName] to [targetName]!"
-  SendCurrencySuccessForReceiver: "&6You have received [sendAmount] [currencyName] from [senderName]!"
-  RemoveInvalidAmount: "&6You have entered an invlaid amount of [currencyName]!"
-  # The following messages DO NOT support the Multicur placeholders from above
-  NoPermission: "&cYou do not have permission for that command!"
-  GenericError: "&cError occurred. Contact an admin"
-  MissingCurrencyInput: "&6You must input a currency!"
