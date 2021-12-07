@@ -19,13 +19,16 @@ public class Multicur extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.getLogger().info("\n" +
-                "    __  __       _ _   _           \n" +
-                "   |  \\/  |     | | | (_)                \n" +
-                "   | \\  / |_   _| | |_ _  ___ _   _ _ __ \n" +
-                "   | |\\/| | | | | | __| |/ __| | | | '__|\n" +
-                "   | |  | | |_| | | |_| | (__| |_| | |   \n" +
-                "   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|   \n\nVersion 1.2.3");
+        this.getLogger().info("""
+
+                    __  __       _ _   _          \s
+                   |  \\/  |     | | | (_)               \s
+                   | \\  / |_   _| | |_ _  ___ _   _ _ __\s
+                   | |\\/| | | | | | __| |/ __| | | | '__|
+                   | |  | | |_| | | |_| | (__| |_| | |  \s
+                   |_|  |_|\\__,_|_|\\__|_|\\___|\\__,_|_|  \s
+
+                Version 1.3.0""");
 
         //Checks for plugin folder
         if (!this.getDataFolder().exists()) {
@@ -56,14 +59,13 @@ public class Multicur extends JavaPlugin {
 
         // Check to see if MySQL has been enabled
         if(config.getBoolean("mysql.use")) {
-            final String username = config.getString("mysql.username");
-            final String password = config.getString("mysql.password");
-            final String url = config.getString("mysql.address");
+            final String mysqlConnectionString = config.getString("mysql.connection_string");
 
 
             // MySQL create table if it doesn't exist
             try {
-                connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
+                assert mysqlConnectionString != null;
+                connection = DriverManager.getConnection(mysqlConnectionString);
 
                 // Create userdata table
                 this.getLogger().info("Creating MySQL table if not exists...");
@@ -80,25 +82,25 @@ public class Multicur extends JavaPlugin {
                 // Get the name of currencies
                 Set<String> set_currencies = config.getConfigurationSection("currency").getKeys(false);
                 List<String> currencies = new ArrayList<>(set_currencies);
-                for(int i = 0; i < currencies.size(); i++) {
-                    String currency = currencies.get(i) + "_balance";
+            for (String s : currencies) {
+                String currency = s + "_balance";
 
-                    //Create currency columns
-                    this.getLogger().info("Create MySQL table columns for currencies...");
-                    String currencySQL = String.format("ALTER TABLE mcur_accounts ADD %s double;", currency);
-                    try {
-                        PreparedStatement currencyStmt = connection.prepareStatement(currencySQL);
-                        currencyStmt.executeUpdate();
-                        this.getLogger().info(String.format("Currency column for %s created in MySQL table...", currency));
-                    } catch (SQLException e) {
-                        if(e.getErrorCode() == 1060)
-                            this.getLogger().info("Currency column already exists, skipping creation...");
-                        else {
-                            this.getLogger().info("Error with MySQL:");
-                            e.printStackTrace();
-                        }
+                //Create currency columns
+                this.getLogger().info("Create MySQL table columns for currencies...");
+                String currencySQL = String.format("ALTER TABLE mcur_accounts ADD %s double;", currency);
+                try {
+                    PreparedStatement currencyStmt = connection.prepareStatement(currencySQL);
+                    currencyStmt.executeUpdate();
+                    this.getLogger().info(String.format("Currency column for %s created in MySQL table...", currency));
+                } catch (SQLException e) {
+                    if (e.getErrorCode() == 1060)
+                        this.getLogger().info("Currency column already exists, skipping creation...");
+                    else {
+                        this.getLogger().info("Error with MySQL:");
+                        e.printStackTrace();
                     }
                 }
+            }
         }
         else {
             this.getLogger().info("MYSQL has not been enabled, disabling Multicur!\nPlease set MySQL to 'true' in config.yml and configure MySQL settings.");
