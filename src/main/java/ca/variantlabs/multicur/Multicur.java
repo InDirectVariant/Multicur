@@ -59,13 +59,14 @@ public class Multicur extends JavaPlugin {
 
         // Check to see if MySQL has been enabled
         if(config.getBoolean("mysql.use")) {
-            final String mysqlConnectionString = config.getString("mysql.connection_string");
+            final String mysqlAddress = config.getString("mysql.address");
+            final String mysqlUser = config.getString("mysql.username");
+            final String mysqlPass = config.getString("mysql.password");
 
 
             // MySQL create table if it doesn't exist
             try {
-                assert mysqlConnectionString != null;
-                connection = DriverManager.getConnection(mysqlConnectionString);
+                connection = DriverManager.getConnection("jdbc:mysql://" + mysqlAddress + "?autoReconnect=true", mysqlUser, mysqlPass);
 
                 // Create userdata table
                 this.getLogger().info("Creating MySQL table if not exists...");

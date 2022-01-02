@@ -11,7 +11,9 @@
 mysql:
   # This is set to false by default, set to true and enter credentials to enable the plugin
   use: false
-  connection_string: "jdbc:mysql://username:password@127.0.0.1:3306/database"
+  address: "127.0.0.1:3006/database"
+  username: "root"
+  password: "password"
 
 # Here are the currency settings
 # Your currency has a name, a symbol, the starting balance for new players, the display format, and options to disable player to player paying

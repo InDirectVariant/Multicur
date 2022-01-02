@@ -25,7 +25,7 @@ public class MulticurPAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.0";
+        return "1.3.0";
     }
 
     @Override
