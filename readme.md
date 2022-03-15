@@ -4,9 +4,3 @@
 ## Features ##
 * Cross-Server support with MySQL
 * Placeholder API support
-* Active development
-* Active support
-
-## Works in Progress ##
-* Interest rates
-* Localization
